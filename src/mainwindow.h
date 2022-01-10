@@ -24,6 +24,20 @@ private slots:
 
     void on_pushButtonClearCustomClaims_clicked();
 
+    void on_pushButtonRemoveSelectedCustomClaim_clicked();
+
+    void on_listWidgetCustomClaims_itemSelectionChanged();
+
+    void on_pushButtonAddCustomClaim_clicked();
+
+    void on_pushButtonClearEncodeOutput_clicked();
+
+    void on_pushButtonClearDecodeOutput_clicked();
+
+    void on_textEditDecodeOutput_textChanged();
+
+    void on_textEditEncodeOutput_textChanged();
+
 private:
     Ui::MainWindow* ui;
 

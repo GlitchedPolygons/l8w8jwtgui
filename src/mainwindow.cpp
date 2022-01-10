@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTimeUtc().addSecs(600));
 
     ui->labelVersionNumbers->setText(QString("lib/l8w8jwt version: %1").arg(L8W8JWT_VERSION_STR));
+
+    on_textEditEncodeOutput_textChanged();
+    on_textEditDecodeOutput_textChanged();
+    on_listWidgetCustomClaims_itemSelectionChanged();
 }
 
 MainWindow::~MainWindow()
@@ -49,5 +53,46 @@ void MainWindow::ensureDateTimeFieldsValidity()
 void MainWindow::on_pushButtonClearCustomClaims_clicked()
 {
     ui->listWidgetCustomClaims->clear();
+    on_listWidgetCustomClaims_itemSelectionChanged();
 }
 
+void MainWindow::on_pushButtonRemoveSelectedCustomClaim_clicked()
+{
+    for (QListWidgetItem* selectedItem : ui->listWidgetCustomClaims->selectedItems())
+    {
+        delete ui->listWidgetCustomClaims->takeItem(ui->listWidgetCustomClaims->row(selectedItem));
+    }
+}
+
+void MainWindow::on_listWidgetCustomClaims_itemSelectionChanged()
+{
+    const bool listEmpty = ui->listWidgetCustomClaims->items(nullptr).isEmpty();
+
+    ui->pushButtonClearCustomClaims->setEnabled(!listEmpty);
+    ui->pushButtonRemoveSelectedCustomClaim->setEnabled(!listEmpty);
+}
+
+void MainWindow::on_pushButtonAddCustomClaim_clicked()
+{
+    // TODO: create user dialog popup that asks for claim name + value. don't forget to escape double quotes and stuff like that!
+}
+
+void MainWindow::on_pushButtonClearEncodeOutput_clicked()
+{
+    ui->textEditEncodeOutput->clear();
+}
+
+void MainWindow::on_pushButtonClearDecodeOutput_clicked()
+{
+    ui->textEditDecodeOutput->clear();
+}
+
+void MainWindow::on_textEditDecodeOutput_textChanged()
+{
+    ui->pushButtonClearDecodeOutput->setEnabled(!ui->textEditDecodeOutput->toPlainText().isEmpty());
+}
+
+void MainWindow::on_textEditEncodeOutput_textChanged()
+{
+    ui->pushButtonClearEncodeOutput->setEnabled(!ui->textEditEncodeOutput->toPlainText().isEmpty());
+}
