@@ -96,3 +96,13 @@ void MainWindow::on_textEditEncodeOutput_textChanged()
 {
     ui->pushButtonClearEncodeOutput->setEnabled(!ui->textEditEncodeOutput->toPlainText().isEmpty());
 }
+
+void MainWindow::on_pushButtonEncodeAndSign_clicked()
+{
+    // TODO: implement this and only add the standard claims that are also not null or empty in the GUI
+}
+
+void MainWindow::on_pushButtonDecode_clicked()
+{
+    // TODO: implement this
+}
