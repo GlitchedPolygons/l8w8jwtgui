@@ -38,6 +38,10 @@ private slots:
 
     void on_textEditEncodeOutput_textChanged();
 
+    void on_pushButtonEncodeAndSign_clicked();
+
+    void on_pushButtonDecode_clicked();
+
 private:
     Ui::MainWindow* ui;
 
