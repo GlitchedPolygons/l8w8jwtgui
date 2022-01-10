@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(l8w8jwtgui VERSION 0.1 LANGUAGES CXX)
+project(l8w8jwtgui VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -15,11 +15,23 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(PROJECT_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/res/icons.qrc
         ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.h
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.ui
 )
+
+# Windows Icon
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_LIST_DIR}/img/winico.rc")
+
+#  MacOS Icon
+set(MACOSX_BUNDLE_ICON_FILE icon.icns)
+set(APP_ICON_MACOSX ${CMAKE_CURRENT_LIST_DIR}/img/icon.icns)
+set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+
+# Add the lib/l8w8jwt git submodule as a CMake subdirectory for easy integration
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(l8w8jwtgui
@@ -44,9 +56,18 @@ else()
     endif()
 endif()
 
-target_link_libraries(l8w8jwtgui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+if (WIN32)
+    add_compile_definitions("_CRT_SECURE_NO_WARNINGS=1")
+endif ()
+
+target_link_libraries(l8w8jwtgui
+    PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+    PRIVATE l8w8jwt
+)
 
 set_target_properties(l8w8jwtgui PROPERTIES
+    WIN32_EXECUTABLE true
+    MACOSX_BUNDLE true
     MACOSX_BUNDLE_GUI_IDENTIFIER l8w8jwtgui.glitchedpolygons.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
