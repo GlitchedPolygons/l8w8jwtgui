@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
+    <width>600</width>
     <height>700</height>
    </rect>
   </property>
@@ -239,6 +239,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButtonNotBeforeAutoSet">
+                <property name="maximumSize">
+                 <size>
+                  <width>420</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Set to 1 minute in the past</string>
                 </property>
@@ -270,6 +276,12 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="dateTimeEditExpiration">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="displayFormat">
                  <string>yyyy-MM-dd HH:mm:ss</string>
                 </property>
@@ -283,6 +295,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButtonExpirationAutoSet">
+                <property name="maximumSize">
+                 <size>
+                  <width>420</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Set to 10 minutes in the future</string>
                 </property>
@@ -409,6 +427,9 @@
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayoutEncodeAndSignButton">
+          <property name="topMargin">
+           <number>16</number>
+          </property>
           <item>
            <spacer name="horizontalSpacerEncodeButtonL">
             <property name="orientation">
@@ -731,7 +752,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>700</width>
+     <width>600</width>
      <height>17</height>
     </rect>
    </property>
