@@ -226,6 +226,20 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="dateTimeEditNotBefore">
+                <property name="date">
+                 <date>
+                  <year>2022</year>
+                  <month>1</month>
+                  <day>10</day>
+                 </date>
+                </property>
+                <property name="time">
+                 <time>
+                  <hour>16</hour>
+                  <minute>20</minute>
+                  <second>0</second>
+                 </time>
+                </property>
                 <property name="displayFormat">
                  <string>yyyy-MM-dd HH:mm:ss</string>
                 </property>
@@ -281,6 +295,23 @@
                   <width>16777215</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="dateTime">
+                 <datetime>
+                  <hour>16</hour>
+                  <minute>20</minute>
+                  <second>0</second>
+                  <year>2022</year>
+                  <month>1</month>
+                  <day>10</day>
+                 </datetime>
+                </property>
+                <property name="time">
+                 <time>
+                  <hour>16</hour>
+                  <minute>20</minute>
+                  <second>0</second>
+                 </time>
                 </property>
                 <property name="displayFormat">
                  <string>yyyy-MM-dd HH:mm:ss</string>
