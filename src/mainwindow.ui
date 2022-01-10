@@ -6,20 +6,639 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>700</width>
+    <height>700</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>700</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabEncode">
+       <attribute name="title">
+        <string>Encode / Sign</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>8</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayoutEncodeParams">
+          <property name="spacing">
+           <number>32</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayoutStandardClaims">
+            <property name="spacing">
+             <number>8</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutAlgo">
+              <item>
+               <widget class="QLabel" name="labelAlgo">
+                <property name="text">
+                 <string>Algorithm</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBoxAlgo">
+                <item>
+                 <property name="text">
+                  <string>HS256</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>HS384</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>HS512</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RS256</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RS384</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RS512</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PS256</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PS384</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PS512</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ES256</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ES384</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ES512</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ES256K</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacerAlgo">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutIssuer">
+              <item>
+               <widget class="QLabel" name="labelIssuer">
+                <property name="text">
+                 <string>Issuer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditIssuer"/>
+              </item>
+              <item>
+               <spacer name="verticalSpacerIssuer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutAudience">
+              <item>
+               <widget class="QLabel" name="labelAudience">
+                <property name="text">
+                 <string>Audience</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditAudience"/>
+              </item>
+              <item>
+               <spacer name="verticalSpacerAudience">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutSubject">
+              <item>
+               <widget class="QLabel" name="labelSubject">
+                <property name="text">
+                 <string>Subject</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditSubject"/>
+              </item>
+              <item>
+               <spacer name="verticalSpacerSubject">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutNotBefore">
+              <item>
+               <widget class="QLabel" name="labelNotBefore">
+                <property name="text">
+                 <string>Not before (UTC)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEditNotBefore">
+                <property name="displayFormat">
+                 <string>yyyy-MM-dd HH:mm:ss</string>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonNotBeforeAutoSet">
+                <property name="text">
+                 <string>Set to 1 minute in the past</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacerNotBefore">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutExpiration">
+              <item>
+               <widget class="QLabel" name="labelExpirationDate">
+                <property name="text">
+                 <string>Expiration (UTC)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateTimeEdit" name="dateTimeEditExpiration">
+                <property name="displayFormat">
+                 <string>yyyy-MM-dd HH:mm:ss</string>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonExpirationAutoSet">
+                <property name="text">
+                 <string>Set to 10 minutes in the future</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayoutEncodeTextFields">
+            <property name="spacing">
+             <number>8</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutCustomClaims">
+              <item>
+               <widget class="QLabel" name="labelCustomClaims">
+                <property name="text">
+                 <string>Custom claims</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListWidget" name="listWidgetCustomClaims">
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::MultiSelection</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayoutCustomClaimsListButtons">
+                <item>
+                 <widget class="QPushButton" name="pushButtonAddCustomClaim">
+                  <property name="minimumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>+</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonRemoveSelectedCustomClaim">
+                  <property name="minimumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>-</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonClearCustomClaims">
+                  <property name="minimumSize">
+                   <size>
+                    <width>64</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>64</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Clear</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacerCustomClaimsListButtons">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutSigningKey">
+              <item>
+               <widget class="QLabel" name="labelSigningKey">
+                <property name="text">
+                 <string>Signing key</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="textEditSigningKey"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayoutEncodeAndSignButton">
+          <item>
+           <spacer name="horizontalSpacerEncodeButtonL">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonEncodeAndSign">
+            <property name="minimumSize">
+             <size>
+              <width>128</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Encode and sign</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacerEncodeButtonR">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutEncodeOutput">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelEncodeOutput">
+            <property name="text">
+             <string>Output</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditEncodeOutput">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>128</height>
+             </size>
+            </property>
+            <property name="undoRedoEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabDecode">
+       <attribute name="title">
+        <string>Decode / Verify</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>8</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutDecodeJwt">
+          <item>
+           <widget class="QLabel" name="labelDecodeJwt">
+            <property name="text">
+             <string>JWT</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditDecodeJwt"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutDecodeKey">
+          <item>
+           <widget class="QLabel" name="labelSignatureVerificationKey">
+            <property name="text">
+             <string>Signature verification key</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditSignatureVerificationKey"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayoutDecodeButton">
+          <item>
+           <spacer name="horizontalSpacerDecodeButtonL">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonDecode">
+            <property name="minimumSize">
+             <size>
+              <width>128</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Decode and verify</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacerDecodeButtonR">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutDecodeOutput">
+          <item>
+           <widget class="QLabel" name="labelDecodeOutput">
+            <property name="text">
+             <string>Output</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditDecodeOutput">
+            <property name="undoRedoEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabAbout">
+       <attribute name="title">
+        <string>About</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="labelAboutText">
+          <property name="text">
+           <string>About L8W8JWT GUI</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelVersionNumbers">
+          <property name="text">
+           <string>lib/l8w8jwt version: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="textBrowserAbout">
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelLegalNotice">
+          <property name="text">
+           <string>Qt | Legal notice</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="textBrowser">
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>700</width>
      <height>17</height>
     </rect>
    </property>

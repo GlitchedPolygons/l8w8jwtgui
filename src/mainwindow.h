@@ -17,7 +17,16 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_pushButtonNotBeforeAutoSet_clicked();
+
+    void on_pushButtonExpirationAutoSet_clicked();
+
+    void on_pushButtonClearCustomClaims_clicked();
+
 private:
     Ui::MainWindow* ui;
+
+    void ensureDateTimeFieldsValidity();
 };
 #endif // MAINWINDOW_H
