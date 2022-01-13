@@ -11,6 +11,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (WIN32)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -wd5105")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd5105")
+endif()
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
@@ -57,6 +62,7 @@ else()
 endif()
 
 if (WIN32)
+    target_compile_options(${PROJECT_NAME} PUBLIC /W3)
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS=1")
 endif ()
 
