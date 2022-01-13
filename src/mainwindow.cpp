@@ -6,6 +6,7 @@
 #include <l8w8jwt/version.h>
 
 #include <QDateTime>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -74,7 +75,10 @@ void MainWindow::on_listWidgetCustomClaims_itemSelectionChanged()
 
 void MainWindow::on_pushButtonAddCustomClaim_clicked()
 {
-    // TODO: create user dialog popup that asks for claim name + value. don't forget to escape double quotes and stuff like that!
+    bool ok;
+    QString text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim here in the following format:\n\nclaim=value\n\nFor string types that would be:\n\nclaim=\"value\"\n", QLineEdit::Normal, "", &ok);
+    //if (ok && !text.isEmpty())
+
 }
 
 void MainWindow::on_pushButtonClearEncodeOutput_clicked()
