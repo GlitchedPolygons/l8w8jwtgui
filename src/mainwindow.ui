@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>550</width>
     <height>700</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
+    <width>550</width>
     <height>700</height>
    </size>
   </property>
@@ -23,8 +23,14 @@
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
       <property name="currentIndex">
        <number>0</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideNone</enum>
       </property>
       <widget class="QWidget" name="tabEncode">
        <attribute name="title">
@@ -45,6 +51,9 @@
              <layout class="QVBoxLayout" name="verticalLayoutAlgo">
               <item>
                <widget class="QLabel" name="labelAlgo">
+                <property name="toolTip">
+                 <string>Signing algorithm to use.</string>
+                </property>
                 <property name="text">
                  <string>Algorithm</string>
                 </property>
@@ -235,7 +244,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>15</hour>
+                  <hour>13</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -258,6 +267,9 @@
                   <width>420</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>Useful shortcut to setting the &quot;nbf&quot; claim to exactly 60 seconds ago.</string>
                 </property>
                 <property name="text">
                  <string>Set to 1 minute in the past</string>
@@ -298,7 +310,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>15</hour>
+                  <hour>13</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -308,7 +320,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>15</hour>
+                  <hour>13</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -331,6 +343,9 @@
                   <width>420</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>Useful shortcut for setting the expiration field to exactly 10 minutes in the future from now.</string>
                 </property>
                 <property name="text">
                  <string>Set to 10 minutes in the future</string>
@@ -366,17 +381,14 @@
                <layout class="QHBoxLayout" name="horizontalLayoutCustomClaimsListButtons">
                 <item>
                  <widget class="QPushButton" name="pushButtonAddCustomClaim">
-                  <property name="minimumSize">
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>20</width>
-                    <height>20</height>
+                    <width>32</width>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Adds a new custom claim to the jwt's payload.</string>
                   </property>
                   <property name="text">
                    <string>+</string>
@@ -385,17 +397,14 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="pushButtonRemoveSelectedCustomClaim">
-                  <property name="minimumSize">
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>20</width>
-                    <height>20</height>
+                    <width>32</width>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Removes the selected custom claims from the jwt's payload.</string>
                   </property>
                   <property name="text">
                    <string>-</string>
@@ -404,17 +413,14 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="pushButtonClearCustomClaims">
-                  <property name="minimumSize">
-                   <size>
-                    <width>64</width>
-                    <height>20</height>
-                   </size>
-                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>64</width>
-                    <height>20</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Clears the list of custom claims.</string>
                   </property>
                   <property name="text">
                    <string>Clear</string>
@@ -487,6 +493,9 @@
               <width>128</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Encodes the above claims and sign the JWT using the specified signing key.</string>
             </property>
             <property name="text">
              <string>Encode and sign</string>
@@ -1170,8 +1179,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
-     <height>21</height>
+     <width>550</width>
+     <height>17</height>
     </rect>
    </property>
   </widget>

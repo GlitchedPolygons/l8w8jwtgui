@@ -79,6 +79,11 @@ set_target_properties(l8w8jwtgui PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
+add_custom_command(TARGET l8w8jwtgui
+    POST_BUILD COMMAND ${CMAKE_COMMAND}
+    -E copy ${CMAKE_CURRENT_LIST_DIR}/qss/theme.qss "${CMAKE_CURRENT_BINARY_DIR}/"
+)
+
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(l8w8jwtgui)
 endif()

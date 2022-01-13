@@ -1,0 +1,50 @@
+QMainWindow,
+QDialog {
+  background: qlineargradient(
+    x1: 0,
+    y1: 0,
+    x2: 0.72,
+    y2: 1,
+    stop: 0 #00454e,
+    stop: 1 #158585
+  );
+}
+
+QLabel {
+  color: aliceblue;
+}
+
+QTabWidget::pane {
+  border-top: 1px solid #7e878f;
+}
+
+QTabWidget::tab-bar {
+  left: 8px;
+}
+
+QTabBar::tab {
+  color: aliceblue;
+  background: transparent;
+  border: 1px solid #81a6a2;
+  border-bottom-color: transparent;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  min-width: 8ex;
+  padding: 2px 8px 2px 8px;
+  margin-right: 8px;
+}
+
+QTabBar::tab:selected,
+QTabBar::tab:hover {
+  border: 1px solid #fafafa;
+  border-bottom-color: transparent;
+}
+
+QTabBar::tab:selected {
+  border-color: #ffffff;
+  border-bottom-color: transparent;
+}
+
+QTabBar::tab:!selected {
+  margin-top: 3px;
+}

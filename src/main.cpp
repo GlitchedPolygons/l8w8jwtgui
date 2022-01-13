@@ -2,6 +2,7 @@
 #include "constants.h"
 
 #include <QApplication>
+#include <QFile>
 
 int main(int argc, char* argv[])
 {
@@ -13,6 +14,13 @@ int main(int argc, char* argv[])
 
     QApplication application(argc, argv);
     application.setWindowIcon(QIcon(":/img/icon.png"));
+
+    QFile theme(QCoreApplication::applicationDirPath() + "/theme.qss");
+    if (theme.exists())
+    {
+        theme.open(QFile::ReadOnly);
+        application.setStyleSheet(QLatin1String(theme.readAll()));
+    }
 
     MainWindow window;
     window.show();
