@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <l8w8jwt/base64.h>
 #include <l8w8jwt/encode.h>
 #include <l8w8jwt/decode.h>
 #include <l8w8jwt/version.h>
 
 #include <QDateTime>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <QInputDialog>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -77,8 +80,7 @@ void MainWindow::on_pushButtonAddCustomClaim_clicked()
 {
     bool ok;
     QString text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim here in the following format:\n\nclaim=value\n\nFor string types that would be:\n\nclaim=\"value\"\n", QLineEdit::Normal, "", &ok);
-    //if (ok && !text.isEmpty())
-
+    // if (ok && !text.isEmpty())
 }
 
 void MainWindow::on_pushButtonClearEncodeOutput_clicked()
@@ -106,7 +108,117 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
     // TODO: implement this and only add the standard claims that are also not null or empty in the GUI
 }
 
+static inline int jwtAlgoFromString(const QString alg)
+{
+    const uint16_t crc16 = qChecksum(alg.toUtf8());
+
+    switch (crc16)
+    {
+        case 60318:
+            return L8W8JWT_ALG_HS256;
+        case 35504:
+            return L8W8JWT_ALG_HS384;
+        case 57934:
+            return L8W8JWT_ALG_HS512;
+        case 43370:
+            return L8W8JWT_ALG_RS256;
+        case 51268:
+            return L8W8JWT_ALG_RS384;
+        case 41146:
+            return L8W8JWT_ALG_RS512;
+        case 60905:
+            return L8W8JWT_ALG_PS256;
+        case 36039:
+            return L8W8JWT_ALG_PS384;
+        case 58425:
+            return L8W8JWT_ALG_PS512;
+        case 51940:
+            return L8W8JWT_ALG_ES256;
+        case 43978:
+            return L8W8JWT_ALG_ES384;
+        case 49972:
+            return L8W8JWT_ALG_ES512;
+        case 26025:
+            return L8W8JWT_ALG_ES256K;
+        default:
+            return -1;
+    }
+}
+
 void MainWindow::on_pushButtonDecode_clicked()
 {
-    // TODO: implement this
+    const QString jwt = ui->textEditDecodeJwt->toPlainText();
+    if (jwt.isEmpty())
+    {
+        ui->textEditDecodeOutput->setText("❌ JWT text field empty; nothing to decode!");
+        return;
+    }
+
+    const QStringList segments = jwt.split('.');
+    if (segments.count() != 3)
+    {
+        ui->textEditDecodeOutput->setText("❌ Invalid JWT format!");
+        return;
+    }
+
+    l8w8jwt_decoding_params decodingParams = { 0x00 };
+
+    const QByteArray jwtUtf8 = jwt.toUtf8();
+
+    decodingParams.jwt = const_cast<char*>(jwtUtf8.constData());
+    decodingParams.jwt_length = jwtUtf8.length();
+
+    const QString header = segments[0];
+    const QString payload = segments[1];
+    const QString signature = segments[2];
+
+    const QByteArray headerUtf8 = header.toUtf8();
+    const QByteArray payloadUtf8 = payload.toUtf8();
+
+    const QByteArray headerJsonUtf8 = QByteArray::fromBase64(headerUtf8, QByteArray::Base64UrlEncoding);
+    const QByteArray payloadJsonUtf8 = QByteArray::fromBase64(payloadUtf8, QByteArray::Base64UrlEncoding);
+
+    const QJsonDocument headerJsonDocument = QJsonDocument::fromJson(headerJsonUtf8);
+    const QJsonDocument payloadJsonDocument = QJsonDocument::fromJson(payloadJsonUtf8);
+
+    QJsonValue alg = headerJsonDocument["alg"];
+    if (!alg.isString())
+    {
+        ui->textEditDecodeOutput->setText("❌ Invalid JWT header segment! Failed to decode...");
+        return;
+    }
+
+    const QString headerJsonString = QString::fromUtf8(headerJsonUtf8);
+    const QString payloadJsonString = QString::fromUtf8(payloadJsonUtf8);
+
+    ui->textEditDecodeOutput->setText(QString("✅ Decoded header:\n%1\n✅ Decoded payload:\n%2").arg(headerJsonDocument.toJson()).arg(payloadJsonDocument.toJson()));
+
+    const QString signatureVerificationKey = ui->textEditSignatureVerificationKey->toPlainText();
+    const QByteArray signatureVerificationKeyUtf8 = signatureVerificationKey.toUtf8();
+
+    decodingParams.alg = jwtAlgoFromString(alg.toString());
+    decodingParams.iat_tolerance_seconds = 8;
+    decodingParams.exp_tolerance_seconds = 8;
+    decodingParams.nbf_tolerance_seconds = 8;
+    decodingParams.validate_iat = 1;
+    decodingParams.validate_exp = 1;
+    decodingParams.validate_nbf = 1;
+    decodingParams.verification_key = (unsigned char*)const_cast<char*>(signatureVerificationKeyUtf8.constData());
+    decodingParams.verification_key_length = signatureVerificationKeyUtf8.length();
+
+    enum l8w8jwt_validation_result validationResult = ::L8W8JWT_VALID;
+
+    const int r = l8w8jwt_decode(&decodingParams, &validationResult, nullptr, nullptr);
+
+    if (r != L8W8JWT_SUCCESS)
+    {
+        ui->textEditDecodeOutput->setText(QString("❌ Unknown jwt decoding error! \"l8w8jwt_decode\" returned: %1").arg(r));
+        return;
+    }
+
+    if (r == L8W8JWT_INVALID_ARG && decodingParams.verification_key_length == 0)
+    {
+        // TODO: display a warning msg that notifies the user that no verification key was entered and that thus there is nothing to verify the signature against (it's a decode-only operation, in that case..)
+        return;
+    }
 }
