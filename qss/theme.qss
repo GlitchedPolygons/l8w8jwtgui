@@ -5,8 +5,8 @@ QDialog {
     y1: 0,
     x2: 0.72,
     y2: 1,
-    stop: 0 #00454e,
-    stop: 1 #158585
+    stop: 0 #002b30,
+    stop: 1 #0a5c5c
   );
 }
 
