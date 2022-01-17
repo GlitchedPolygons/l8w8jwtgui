@@ -42,6 +42,10 @@ private slots:
 
     void on_pushButtonDecode_clicked();
 
+    void on_textEditDecodeJwt_textChanged();
+
+    void on_textEditSignatureVerificationKey_textChanged();
+
 private:
     Ui::MainWindow* ui;
 

@@ -157,7 +157,7 @@ void MainWindow::on_pushButtonDecode_clicked()
     const QStringList segments = jwt.split('.');
     if (segments.count() != 3)
     {
-        ui->textEditDecodeOutput->setText("❌ Invalid JWT format!");
+        ui->textEditDecodeOutput->setText("❌ Invalid jwt format!");
         return;
     }
 
@@ -175,25 +175,36 @@ void MainWindow::on_pushButtonDecode_clicked()
     const QByteArray headerUtf8 = header.toUtf8();
     const QByteArray payloadUtf8 = payload.toUtf8();
 
-    const QByteArray headerJsonUtf8 = QByteArray::fromBase64(headerUtf8, QByteArray::Base64UrlEncoding);
-    const QByteArray payloadJsonUtf8 = QByteArray::fromBase64(payloadUtf8, QByteArray::Base64UrlEncoding);
+    const QByteArray::FromBase64Result headerJsonUtf8 = QByteArray::fromBase64Encoding(headerUtf8, QByteArray::Base64UrlEncoding | QByteArray::AbortOnBase64DecodingErrors);
+    const QByteArray::FromBase64Result payloadJsonUtf8 = QByteArray::fromBase64Encoding(payloadUtf8, QByteArray::Base64UrlEncoding | QByteArray::AbortOnBase64DecodingErrors);
 
-    const QJsonDocument headerJsonDocument = QJsonDocument::fromJson(headerJsonUtf8);
-    const QJsonDocument payloadJsonDocument = QJsonDocument::fromJson(payloadJsonUtf8);
-
-    QJsonValue alg = headerJsonDocument["alg"];
-    if (!alg.isString())
+    if (header.isEmpty() || headerJsonUtf8.decodingStatus != QByteArray::Base64DecodingStatus::Ok)
     {
-        ui->textEditDecodeOutput->setText("❌ Invalid JWT header segment! Failed to decode...");
+        ui->textEditDecodeOutput->setText("❌ Failed to decode: invalid jwt header segment!");
         return;
     }
 
-    const QString headerJsonString = QString::fromUtf8(headerJsonUtf8);
-    const QString payloadJsonString = QString::fromUtf8(payloadJsonUtf8);
+    if (payload.isEmpty() || payloadJsonUtf8.decodingStatus != QByteArray::Base64DecodingStatus::Ok)
+    {
+        ui->textEditDecodeOutput->setText("❌ Failed to decode: invalid jwt payload segment!");
+        return;
+    }
 
-    ui->textEditDecodeOutput->setText(QString("✅ Decoded header:\n%1\n✅ Decoded payload:\n%2").arg(headerJsonDocument.toJson()).arg(payloadJsonDocument.toJson()));
+    const QJsonDocument headerJsonDocument = QJsonDocument::fromJson(headerJsonUtf8.decoded);
+    const QJsonDocument payloadJsonDocument = QJsonDocument::fromJson(payloadJsonUtf8.decoded);
 
-    const QString signatureVerificationKey = ui->textEditSignatureVerificationKey->toPlainText();
+    QJsonValue alg = headerJsonDocument["alg"];
+
+    if (!alg.isString())
+    {
+        ui->textEditDecodeOutput->setText("❌ Failed to decode: invalid jwt header segment!");
+        return;
+    }
+
+    const QString headerJsonString = QString::fromUtf8(headerJsonUtf8.decoded);
+    const QString payloadJsonString = QString::fromUtf8(payloadJsonUtf8.decoded);
+
+    const QString signatureVerificationKey = ui->textEditSignatureVerificationKey->toPlainText().trimmed();
     const QByteArray signatureVerificationKeyUtf8 = signatureVerificationKey.toUtf8();
 
     decodingParams.alg = jwtAlgoFromString(alg.toString());
@@ -206,19 +217,68 @@ void MainWindow::on_pushButtonDecode_clicked()
     decodingParams.verification_key = (unsigned char*)const_cast<char*>(signatureVerificationKeyUtf8.constData());
     decodingParams.verification_key_length = signatureVerificationKeyUtf8.length();
 
+    if (decodingParams.verification_key == nullptr || decodingParams.verification_key_length == 0)
+    {
+        decodingParams.verification_key = (unsigned char*)"\0\0";
+        decodingParams.verification_key_length = 1;
+
+        // TODO: display a warning msg that notifies the user that no verification key was entered and that thus there is nothing to verify the signature against (it's a decode-only operation, in that case..)
+    }
+
     enum l8w8jwt_validation_result validationResult = ::L8W8JWT_VALID;
 
     const int r = l8w8jwt_decode(&decodingParams, &validationResult, nullptr, nullptr);
 
-    if (r != L8W8JWT_SUCCESS)
+    switch (r)
     {
-        ui->textEditDecodeOutput->setText(QString("❌ Unknown jwt decoding error! \"l8w8jwt_decode\" returned: %1").arg(r));
-        return;
+        case L8W8JWT_SUCCESS: {
+            break;
+        }
+        case L8W8JWT_OUT_OF_MEM: {
+            ui->textEditDecodeOutput->setText(QString("❌ Out of memory! Uh oh..."));
+            return;
+        }
+        case L8W8JWT_BASE64_FAILURE:
+        case L8W8JWT_DECODE_FAILED_INVALID_TOKEN_FORMAT: {
+            ui->textEditDecodeOutput->setText(QString("❌ Failed to decode jwt: invalid token format. Please double-check and ensure that all jwt segments are valid, base64 url-encoded JSON strings!"));
+            return;
+        }
+        case L8W8JWT_KEY_PARSE_FAILURE: {
+            ui->textEditDecodeOutput->setText(QString("❌ Failed to parse jwt verification key!"));
+            return;
+        }
+        default: {
+            ui->textEditDecodeOutput->setText(QString("❌ Failed to decode jwt! \"l8w8jwt_decode\" returned error code: %1").arg(r));
+            return;
+        }
     }
 
-    if (r == L8W8JWT_INVALID_ARG && decodingParams.verification_key_length == 0)
-    {
-        // TODO: display a warning msg that notifies the user that no verification key was entered and that thus there is nothing to verify the signature against (it's a decode-only operation, in that case..)
-        return;
-    }
+    const bool iatFailure = validationResult & ::L8W8JWT_IAT_FAILURE;
+    const bool expFailure = validationResult & ::L8W8JWT_EXP_FAILURE;
+    const bool nbfFailure = validationResult & ::L8W8JWT_NBF_FAILURE;
+    const bool sigFailure = validationResult & ::L8W8JWT_SIGNATURE_VERIFICATION_FAILURE;
+
+    QString result;
+    result.reserve(256);
+
+    result += QString(sigFailure ? "✅ Signature valid.\n" : "❌ Signature invalid.\n");
+    result += QString(iatFailure ? "✅ Emission timestamp verified.\n" : "❌ Emission timestamp invalid.\n");
+    result += QString(expFailure ? "✅ Token expiration date verified.\n" : "❌ Token expired or expiration date invalid.\n");
+    result += QString(nbfFailure ? "✅ NBF (\"not before\") claim verified successfully.\n" : "❌ Token not yet valid or .\n");
+
+    result += QString("\n✅ Decoded header:\n%1\n✅ Decoded payload:\n%2\n").arg(headerJsonDocument.toJson()).arg(payloadJsonDocument.toJson());
+
+    ui->textEditDecodeOutput->setText(result);
+}
+
+void MainWindow::on_textEditDecodeJwt_textChanged()
+{
+    const bool decodeReady = !ui->textEditDecodeJwt->toPlainText().isEmpty();
+    ui->pushButtonDecode->setEnabled(decodeReady);
+}
+
+void MainWindow::on_textEditSignatureVerificationKey_textChanged()
+{
+    const bool decodeReady = !ui->textEditDecodeJwt->toPlainText().isEmpty();
+    ui->pushButtonDecode->setEnabled(decodeReady);
 }
