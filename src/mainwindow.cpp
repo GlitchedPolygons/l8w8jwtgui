@@ -169,7 +169,6 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
     encodingParams.iat = time(nullptr);
     encodingParams.alg = ui->comboBoxAlgo->currentIndex();
 
-    const QDateTime defaultDateTime {};
     const QDateTime exp = ui->dateTimeEditExpiration->dateTime();
     const QDateTime nbf = ui->dateTimeEditNotBefore->dateTime();
 
@@ -191,20 +190,13 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
     encodingParams.secret_key = reinterpret_cast<unsigned char*>(signingKeyUtf8.data());
     encodingParams.secret_key_length = signingKeyUtf8.length();
 
+    encodingParams.exp = exp.toSecsSinceEpoch();
+    encodingParams.nbf = nbf.toSecsSinceEpoch();
+
     if (!signingKeyPassword.isEmpty())
     {
         encodingParams.secret_key_pw = reinterpret_cast<unsigned char*>(signingKeyPasswordUtf8.data());
         encodingParams.secret_key_pw_length = signingKeyPasswordUtf8.length();
-    }
-
-    if (exp != defaultDateTime)
-    {
-        encodingParams.exp = exp.toSecsSinceEpoch();
-    }
-
-    if (nbf != defaultDateTime)
-    {
-        encodingParams.nbf = nbf.toSecsSinceEpoch();
     }
 
     if (!iss.isEmpty())
