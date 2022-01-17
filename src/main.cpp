@@ -23,6 +23,9 @@ int main(int argc, char* argv[])
     }
 
     MainWindow window;
+
+    QObject::connect(&application, SIGNAL(focusChanged(QWidget*,QWidget*)), &window, SLOT(onChangedFocus(QWidget*,QWidget*)));
+
     window.show();
 
     return application.exec();

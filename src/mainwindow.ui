@@ -20,7 +20,7 @@
    <string/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="tabShape">
@@ -36,12 +36,9 @@
        <attribute name="title">
         <string>Encode / Sign</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayoutEncodeParams">
-          <property name="spacing">
-           <number>32</number>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutClaims">
           <item>
            <layout class="QVBoxLayout" name="verticalLayoutStandardClaims">
             <property name="spacing">
@@ -244,7 +241,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>12</hour>
+                  <hour>11</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -310,7 +307,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>12</hour>
+                  <hour>11</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -320,7 +317,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>12</hour>
+                  <hour>11</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -357,10 +354,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayoutEncodeTextFields">
-            <property name="spacing">
-             <number>8</number>
-            </property>
+           <layout class="QVBoxLayout" name="verticalLayoutCustomClaimsAndCredentials">
             <item>
              <layout class="QVBoxLayout" name="verticalLayoutCustomClaims">
               <item>
@@ -455,6 +449,41 @@
               </item>
               <item>
                <widget class="QTextEdit" name="textEditSigningKey"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayoutSigningKeyPassword">
+              <item>
+               <widget class="QLabel" name="labelSigningKeyPassword">
+                <property name="text">
+                 <string>Signing key password (if applicable)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayoutSigningKeyPassword">
+                <item>
+                 <widget class="QLineEdit" name="lineEditSigningKeyPassword">
+                  <property name="echoMode">
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonShowSigningKeyPassword">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Show</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </item>

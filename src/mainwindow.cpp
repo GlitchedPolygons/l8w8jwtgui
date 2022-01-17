@@ -6,10 +6,15 @@
 #include <l8w8jwt/decode.h>
 #include <l8w8jwt/version.h>
 
+#include <QTimer>
 #include <QDateTime>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QMessageBox>
 #include <QInputDialog>
+
+#include <chrono>
+#include <thread>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -79,7 +84,7 @@ void MainWindow::on_listWidgetCustomClaims_itemSelectionChanged()
     ui->pushButtonRemoveSelectedCustomClaim->setEnabled(!listEmpty);
 }
 
-static inline QString sanitizeCustomClaimValue(QString value)
+QString MainWindow::sanitizeCustomClaimValue(QString value)
 {
     QString trimmedValue = value.trimmed();
 
@@ -158,7 +163,172 @@ void MainWindow::on_textEditEncodeOutput_textChanged()
 
 void MainWindow::on_pushButtonEncodeAndSign_clicked()
 {
-    // TODO: implement this and only add the standard claims that are also not null or empty in the GUI
+    int r = -1;
+    struct l8w8jwt_encoding_params encodingParams = { 0x00 };
+
+    encodingParams.iat = time(nullptr);
+    encodingParams.alg = ui->comboBoxAlgo->currentIndex();
+
+    const QDateTime defaultDateTime {};
+    const QDateTime exp = ui->dateTimeEditExpiration->dateTime();
+    const QDateTime nbf = ui->dateTimeEditNotBefore->dateTime();
+
+    const QString iss = ui->lineEditIssuer->text();
+    QByteArray issUtf8 = iss.toUtf8();
+
+    const QString sub = ui->lineEditSubject->text();
+    QByteArray subUtf8 = sub.toUtf8();
+
+    const QString aud = ui->lineEditAudience->text();
+    QByteArray audUtf8 = aud.toUtf8();
+
+    const QString signingKey = ui->textEditSigningKey->toPlainText();
+    QByteArray signingKeyUtf8 = signingKey.toUtf8();
+
+    const QString signingKeyPassword = ui->lineEditSigningKeyPassword->text();
+    QByteArray signingKeyPasswordUtf8 = signingKeyPassword.toUtf8();
+
+    encodingParams.secret_key = reinterpret_cast<unsigned char*>(signingKeyUtf8.data());
+    encodingParams.secret_key_length = signingKeyUtf8.length();
+
+    if (!signingKeyPassword.isEmpty())
+    {
+        encodingParams.secret_key_pw = reinterpret_cast<unsigned char*>(signingKeyPasswordUtf8.data());
+        encodingParams.secret_key_pw_length = signingKeyPasswordUtf8.length();
+    }
+
+    if (exp != defaultDateTime)
+    {
+        encodingParams.exp = exp.toSecsSinceEpoch();
+    }
+
+    if (nbf != defaultDateTime)
+    {
+        encodingParams.nbf = nbf.toSecsSinceEpoch();
+    }
+
+    if (!iss.isEmpty())
+    {
+        encodingParams.iss = issUtf8.data();
+        encodingParams.iss_length = issUtf8.length();
+    }
+
+    if (!sub.isEmpty())
+    {
+        encodingParams.sub = subUtf8.data();
+        encodingParams.sub_length = subUtf8.length();
+    }
+
+    if (!aud.isEmpty())
+    {
+        encodingParams.aud = audUtf8.data();
+        encodingParams.aud_length = audUtf8.length();
+    }
+
+    char* output = nullptr;
+    size_t outputLength = 0;
+
+    encodingParams.out = &output;
+    encodingParams.out_length = &outputLength;
+
+    if (ui->listWidgetCustomClaims->count() != 0)
+    {
+        try
+        {
+            encodingParams.additional_payload_claims = new struct l8w8jwt_claim[ui->listWidgetCustomClaims->count()];
+            encodingParams.additional_payload_claims_count = ui->listWidgetCustomClaims->count();
+
+            for (int i = 0; i < ui->listWidgetCustomClaims->count(); ++i)
+            {
+                const QListWidgetItem* customClaimListWidgetItem = ui->listWidgetCustomClaims->item(i);
+                const QStringList customClaimKvp = customClaimListWidgetItem->text().split(": ");
+
+                if (customClaimKvp.length() != 2)
+                {
+                    throw std::exception("L8W8JWT GUI custom claim QListWidget entry string format requirement circumvented and thus infringed! These MUST be key-value pairs separated by \": \" for a valid payload to be written and signed!");
+                }
+
+                const QString customClaimKey = customClaimKvp[0];
+                const QString customClaimValue = customClaimKvp[1];
+
+                QByteArray customClaimKeyUtf8 = customClaimKey.toUtf8();
+                QByteArray customClaimValueUtf8 = customClaimValue.toUtf8();
+
+                struct l8w8jwt_claim& customClaim = encodingParams.additional_payload_claims[i];
+
+                customClaim.type = 7;
+
+                customClaim.key_length = customClaimKeyUtf8.length() - 2;
+                customClaim.key = new char[customClaim.key_length + 1];
+                strncpy(customClaim.key, customClaimKeyUtf8.data() + 1, customClaim.key_length);
+                customClaim.key[customClaim.key_length] = 0x00;
+
+                customClaim.value_length = customClaimValueUtf8.length();
+                customClaim.value = new char[customClaim.value_length + 1];
+                strncpy(customClaim.value, customClaimValueUtf8.data(), customClaim.value_length);
+                customClaim.value[customClaim.value_length] = 0x00;
+            }
+        }
+        catch (const std::bad_alloc& exception)
+        {
+            QMessageBox error;
+            error.setIcon(QMessageBox::Critical);
+            error.setText(QString("❌ Failed to allocate memory for the custom claims to feed into l8w8jwt's encode function parameters struct! Are we OOM? Uh ohhh...."));
+            error.exec();
+
+            QCoreApplication::quit();
+            std::this_thread::sleep_for(std::chrono::milliseconds(256));
+            throw exception;
+        }
+    }
+
+    r = l8w8jwt_encode(&encodingParams);
+
+    switch (r)
+    {
+        case L8W8JWT_SUCCESS: {
+            ui->textEditEncodeOutput->setText(QString(output));
+            break;
+        }
+        case L8W8JWT_OUT_OF_MEM: {
+            ui->textEditEncodeOutput->setText(QString("❌ Encoding and/or signing token failed: OUT OF MEMORY! Uh oh..."));
+            break;
+        }
+        case L8W8JWT_KEY_PARSE_FAILURE: {
+            ui->textEditEncodeOutput->setText(QString("❌ Failed to parse jwt signing key!"));
+            break;
+        }
+        case L8W8JWT_WRONG_KEY_TYPE: {
+            ui->textEditEncodeOutput->setText(QString("❌ Failure to sign token: wrong/invalid signing key type! \"l8w8jwt_encode\" returned: %1").arg(r));
+            break;
+        }
+        case L8W8JWT_SIGNATURE_CREATION_FAILURE: {
+            ui->textEditEncodeOutput->setText(QString("❌ Failure to sign token! \"l8w8jwt_encode\" returned: %1").arg(r));
+            break;
+        }
+        case L8W8JWT_SHA2_FAILURE: {
+            ui->textEditEncodeOutput->setText(QString("❌ Failed to hash jwt header + payload with the appropriate SHA-2 function; wtf! \"l8w8jwt_encode\" returned: %1").arg(r));
+            break;
+        }
+        case L8W8JWT_BASE64_FAILURE: {
+            ui->textEditEncodeOutput->setText(QString("❌ Failure to base64 url-encode one or more token segments! \"l8w8jwt_encode\" returned: %1").arg(r));
+            break;
+        }
+        default: {
+            ui->textEditEncodeOutput->setText(QString("❌ Encoding and/or signing the token failed. \"l8w8jwt_encode\" returned: %1").arg(r));
+            break;
+        }
+    }
+
+    l8w8jwt_free(output);
+
+    for (size_t i = 0; i < encodingParams.additional_payload_claims_count; ++i)
+    {
+        delete[] encodingParams.additional_payload_claims[i].key;
+        delete[] encodingParams.additional_payload_claims[i].value;
+    }
+
+    delete[] encodingParams.additional_payload_claims;
 }
 
 static inline int jwtAlgoFromString(const QString alg)
@@ -358,4 +528,40 @@ void MainWindow::on_textEditSignatureVerificationKey_textChanged()
 void MainWindow::on_textEditSigningKey_textChanged()
 {
     ui->pushButtonEncodeAndSign->setEnabled(!ui->textEditSigningKey->toPlainText().isEmpty());
+}
+
+void MainWindow::on_pushButtonShowSigningKeyPassword_pressed()
+{
+    ui->lineEditSigningKeyPassword->setEchoMode(QLineEdit::EchoMode::Normal);
+    ui->pushButtonShowSigningKeyPassword->setText("Hide");
+}
+
+void MainWindow::on_pushButtonShowSigningKeyPassword_released()
+{
+    ui->lineEditSigningKeyPassword->setEchoMode(QLineEdit::EchoMode::Password);
+    ui->pushButtonShowSigningKeyPassword->setText("Show");
+}
+
+void MainWindow::onChangedFocus(QWidget*, QWidget* newlyFocusedWidget)
+{
+    if (newlyFocusedWidget == ui->lineEditSigningKeyPassword)
+    {
+        QTimer::singleShot(0, ui->lineEditSigningKeyPassword, &QLineEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->textEditSigningKey)
+    {
+        QTimer::singleShot(0, ui->textEditSigningKey, &QTextEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->textEditEncodeOutput)
+    {
+        QTimer::singleShot(0, ui->textEditEncodeOutput, &QTextEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->textEditDecodeJwt)
+    {
+        QTimer::singleShot(0, ui->textEditDecodeJwt, &QTextEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->textEditSignatureVerificationKey)
+    {
+        QTimer::singleShot(0, ui->textEditSignatureVerificationKey, &QTextEdit::selectAll);
+    }
 }

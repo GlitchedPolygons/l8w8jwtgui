@@ -48,9 +48,16 @@ private slots:
 
     void on_textEditSigningKey_textChanged();
 
+    void on_pushButtonShowSigningKeyPassword_pressed();
+
+    void on_pushButtonShowSigningKeyPassword_released();
+
+    void onChangedFocus(QWidget*, QWidget*);
+
 private:
     Ui::MainWindow* ui;
 
     void ensureDateTimeFieldsValidity();
+    QString sanitizeCustomClaimValue(QString);
 };
 #endif // MAINWINDOW_H
