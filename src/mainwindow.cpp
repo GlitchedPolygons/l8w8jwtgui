@@ -114,31 +114,31 @@ static inline int jwtAlgoFromString(const QString alg)
 
     switch (crc16)
     {
-        case 60318:
+        case 2839:
             return L8W8JWT_ALG_HS256;
-        case 35504:
+        case 49825:
             return L8W8JWT_ALG_HS384;
-        case 57934:
+        case 42582:
             return L8W8JWT_ALG_HS512;
-        case 43370:
+        case 62463:
             return L8W8JWT_ALG_RS256;
-        case 51268:
+        case 14921:
             return L8W8JWT_ALG_RS384;
-        case 41146:
+        case 24254:
             return L8W8JWT_ALG_RS512;
-        case 60905:
+        case 58743:
             return L8W8JWT_ALG_PS256;
-        case 36039:
+        case 11547:
             return L8W8JWT_ALG_PS384;
-        case 58425:
+        case 18486:
             return L8W8JWT_ALG_PS512;
-        case 51940:
+        case 30563:
             return L8W8JWT_ALG_ES256;
-        case 43978:
+        case 48853:
             return L8W8JWT_ALG_ES384;
-        case 49972:
+        case 55842:
             return L8W8JWT_ALG_ES512;
-        case 26025:
+        case 23877:
             return L8W8JWT_ALG_ES256K;
         default:
             return -1;
@@ -208,6 +208,13 @@ void MainWindow::on_pushButtonDecode_clicked()
     const QByteArray signatureVerificationKeyUtf8 = signatureVerificationKey.toUtf8();
 
     decodingParams.alg = jwtAlgoFromString(alg.toString());
+
+    if (decodingParams.alg == -1)
+    {
+        ui->textEditDecodeOutput->setText("❌ Failed to decode: invalid or unrecognized jwt \"alg\" claim value inside header segment!");
+        return;
+    }
+
     decodingParams.iat_tolerance_seconds = 8;
     decodingParams.exp_tolerance_seconds = 8;
     decodingParams.nbf_tolerance_seconds = 8;
@@ -261,10 +268,22 @@ void MainWindow::on_pushButtonDecode_clicked()
     QString result;
     result.reserve(256);
 
-    result += QString(sigFailure ? "✅ Signature valid.\n" : "❌ Signature invalid.\n");
-    result += QString(iatFailure ? "✅ Emission timestamp verified.\n" : "❌ Emission timestamp invalid.\n");
-    result += QString(expFailure ? "✅ Token expiration date verified.\n" : "❌ Token expired or expiration date invalid.\n");
-    result += QString(nbfFailure ? "✅ NBF (\"not before\") claim verified successfully.\n" : "❌ Token not yet valid or .\n");
+    result += QString(sigFailure ? "❌ Signature invalid.\n" : "✅ Signature valid.\n");
+
+    if (!payloadJsonDocument["iat"].isUndefined())
+    {
+        result += QString(iatFailure ? "❌ iat: Emission timestamp invalid.\n" : "✅ iat: Emission timestamp verified.\n");
+    }
+
+    if (!payloadJsonDocument["exp"].isUndefined())
+    {
+        result += QString(expFailure ? "❌ exp: Token expired or expiration date value invalid.\n" : "✅ exp: Token not expired.\n");
+    }
+
+    if (!payloadJsonDocument["nbf"].isUndefined())
+    {
+        result += QString(nbfFailure ? "❌ nbf: Token not yet valid or \"nbf\" claim value unrecognized/invalid.\n" : "✅ nbf: Verified.\n");
+    }
 
     result += QString("\n✅ Decoded header:\n%1\n✅ Decoded payload:\n%2\n").arg(headerJsonDocument.toJson()).arg(payloadJsonDocument.toJson());
 
