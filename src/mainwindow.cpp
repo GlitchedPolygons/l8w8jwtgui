@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->labelVersionNumbers->setText(QString("lib/l8w8jwt version: %1").arg(L8W8JWT_VERSION_STR));
 
+    on_textEditSigningKey_textChanged();
     on_textEditEncodeOutput_textChanged();
     on_textEditDecodeOutput_textChanged();
     on_listWidgetCustomClaims_itemSelectionChanged();
@@ -66,21 +67,73 @@ void MainWindow::on_pushButtonRemoveSelectedCustomClaim_clicked()
     {
         delete ui->listWidgetCustomClaims->takeItem(ui->listWidgetCustomClaims->row(selectedItem));
     }
+
+    on_listWidgetCustomClaims_itemSelectionChanged();
 }
 
 void MainWindow::on_listWidgetCustomClaims_itemSelectionChanged()
 {
-    const bool listEmpty = ui->listWidgetCustomClaims->items(nullptr).isEmpty();
+    const bool listEmpty = ui->listWidgetCustomClaims->count() == 0;
 
     ui->pushButtonClearCustomClaims->setEnabled(!listEmpty);
     ui->pushButtonRemoveSelectedCustomClaim->setEnabled(!listEmpty);
 }
 
+static inline QString sanitizeCustomClaimValue(QString value)
+{
+    QString trimmedValue = value.trimmed();
+
+    if (trimmedValue.isEmpty())
+    {
+        return "\"\"";
+    }
+
+    bool numberType = false;
+
+    (void)trimmedValue.toLongLong(&numberType);
+
+    if (!numberType)
+    {
+        (void)trimmedValue.toDouble(&numberType);
+    }
+
+    if (numberType)
+    {
+        return trimmedValue.replace("\"", "");
+    }
+
+    if (trimmedValue == "true" || trimmedValue == "false" || trimmedValue == "null")
+    {
+        return trimmedValue;
+    }
+
+    if (trimmedValue.startsWith("\"") && trimmedValue.endsWith("\""))
+    {
+        const size_t trimmedValueLength = trimmedValue.count();
+        trimmedValue = trimmedValue.right(trimmedValueLength - 1).left(trimmedValueLength - 2);
+    }
+
+    return QString("\"%1\"").arg(trimmedValue.replace("\"", "\\\""));
+}
+
 void MainWindow::on_pushButtonAddCustomClaim_clicked()
 {
     bool ok;
-    QString text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim here in the following format:\n\nclaim=value\n\nFor string types that would be:\n\nclaim=\"value\"\n", QLineEdit::Normal, "", &ok);
-    // if (ok && !text.isEmpty())
+    QString text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim's name here (e.g. \"jti\", \"uid\" or something like that).\n", QLineEdit::Normal, "", &ok);
+
+    if (ok && !text.isEmpty())
+    {
+        const QString claimName = text.trimmed().replace("\"", "");
+        text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim's value here.\n\nThis may be a number, a string value, a boolean or even null.\n", QLineEdit::Normal, "", &ok);
+
+        if (ok)
+        {
+            const QString claimValue = sanitizeCustomClaimValue(text);
+
+            ui->listWidgetCustomClaims->addItem(QString("\"%1\": %2").arg(claimName).arg(claimValue));
+            on_listWidgetCustomClaims_itemSelectionChanged();
+        }
+    }
 }
 
 void MainWindow::on_pushButtonClearEncodeOutput_clicked()
@@ -300,4 +353,9 @@ void MainWindow::on_textEditSignatureVerificationKey_textChanged()
 {
     const bool decodeReady = !ui->textEditDecodeJwt->toPlainText().isEmpty();
     ui->pushButtonDecode->setEnabled(decodeReady);
+}
+
+void MainWindow::on_textEditSigningKey_textChanged()
+{
+    ui->pushButtonEncodeAndSign->setEnabled(!ui->textEditSigningKey->toPlainText().isEmpty());
 }

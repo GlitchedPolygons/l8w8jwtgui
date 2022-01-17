@@ -46,6 +46,8 @@ private slots:
 
     void on_textEditSignatureVerificationKey_textChanged();
 
+    void on_textEditSigningKey_textChanged();
+
 private:
     Ui::MainWindow* ui;
 
