@@ -58,6 +58,12 @@
               </item>
               <item>
                <widget class="QComboBox" name="comboBoxAlgo">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
                 <item>
                  <property name="text">
                   <string>HS256</string>
@@ -150,7 +156,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEditIssuer"/>
+               <widget class="QLineEdit" name="lineEditIssuer">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="verticalSpacerIssuer">
@@ -177,7 +190,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEditAudience"/>
+               <widget class="QLineEdit" name="lineEditAudience">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="verticalSpacerAudience">
@@ -204,7 +224,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEditSubject"/>
+               <widget class="QLineEdit" name="lineEditSubject">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="verticalSpacerSubject">
@@ -232,6 +259,12 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="dateTimeEditNotBefore">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
                 <property name="date">
                  <date>
                   <year>2022</year>
@@ -259,6 +292,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButtonNotBeforeAutoSet">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>420</width>
@@ -299,6 +338,12 @@
               </item>
               <item>
                <widget class="QDateTimeEdit" name="dateTimeEditExpiration">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
@@ -335,6 +380,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButtonExpirationAutoSet">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>420</width>
@@ -791,6 +842,9 @@
         </item>
         <item>
          <widget class="QTextBrowser" name="textBrowserAbout">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="openExternalLinks">
            <bool>true</bool>
           </property>
@@ -805,6 +859,9 @@
         </item>
         <item>
          <widget class="QTextBrowser" name="textBrowser">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="html">
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -812,10 +869,10 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;L8W8JWT GUI - Legal Notice&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This project makes use of the following components, which are, at the time of writing, open-source and freely available under their respective licenses:&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://www.qt.io&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;Qt&lt;/span&gt;&lt;/a&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://www.qt.io&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#13bbd1;&quot;&gt;Qt&lt;/span&gt;&lt;/a&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: LGPL-3.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: The Qt Company&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;l8w8jwt&lt;/span&gt;&lt;/a&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#13bbd1;&quot;&gt;l8w8jwt&lt;/span&gt;&lt;/a&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: Apache-2.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: Raphael Beck | Glitched Polygons&lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
