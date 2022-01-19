@@ -527,6 +527,9 @@ void MainWindow::on_pushButtonDecode_clicked()
         return;
     }
 
+    QString result;
+    result.reserve(256);
+
     decodingParams.iat_tolerance_seconds = 8;
     decodingParams.exp_tolerance_seconds = 8;
     decodingParams.nbf_tolerance_seconds = 8;
@@ -536,15 +539,16 @@ void MainWindow::on_pushButtonDecode_clicked()
     decodingParams.verification_key = (unsigned char*)const_cast<char*>(signatureVerificationKeyUtf8.constData());
     decodingParams.verification_key_length = signatureVerificationKeyUtf8.length();
 
-    if (decodingParams.verification_key == nullptr || decodingParams.verification_key_length == 0)
+    enum l8w8jwt_validation_result validationResult = ::L8W8JWT_VALID;
+
+    const bool decodeOnly = decodingParams.verification_key == nullptr || decodingParams.verification_key_length == 0;
+
+    if (decodeOnly)
     {
         decodingParams.verification_key = (unsigned char*)"\0\0";
         decodingParams.verification_key_length = 1;
-
-        // TODO: display a warning msg that notifies the user that no verification key was entered and that thus there is nothing to verify the signature against (it's a decode-only operation, in that case..)
+        result += QString("⚠ No signature verification key entered: decoding only (without performing a signature check).\n\n");
     }
-
-    enum l8w8jwt_validation_result validationResult = ::L8W8JWT_VALID;
 
     const int r = l8w8jwt_decode(&decodingParams, &validationResult, nullptr, nullptr);
 
@@ -577,10 +581,10 @@ void MainWindow::on_pushButtonDecode_clicked()
     const bool nbfFailure = validationResult & ::L8W8JWT_NBF_FAILURE;
     const bool sigFailure = validationResult & ::L8W8JWT_SIGNATURE_VERIFICATION_FAILURE;
 
-    QString result;
-    result.reserve(256);
-
-    result += QString(sigFailure ? "❌ Signature invalid.\n" : "✅ Signature valid.\n");
+    if (!decodeOnly)
+    {
+        result += QString(sigFailure ? "❌ Signature invalid.\n" : "✅ Signature valid.\n");
+    }
 
     if (!payloadJsonDocument["iat"].isUndefined())
     {
