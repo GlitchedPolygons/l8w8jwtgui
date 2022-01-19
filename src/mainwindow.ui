@@ -129,6 +129,11 @@
                   <string>ES256K</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>EdDSA (Ed25519)</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item>
@@ -274,7 +279,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>11</hour>
+                  <hour>9</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -352,7 +357,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>11</hour>
+                  <hour>9</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -362,7 +367,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>11</hour>
+                  <hour>9</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -821,6 +826,53 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tabSettings">
+       <attribute name="title">
+        <string>Settings</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QCheckBox" name="checkBoxSaveClaims">
+          <property name="text">
+           <string>Save claims on quit</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxSaveWindowSizeOnQuit">
+          <property name="text">
+           <string>Save window size on quit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxSelectTextFieldContentOnFocus">
+          <property name="text">
+           <string>Auto-select text field content on focus</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacerSettings">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tabAbout">
        <attribute name="title">
         <string>About</string>
@@ -1266,7 +1318,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>550</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -57,6 +57,7 @@ private slots:
 private:
     Ui::MainWindow* ui;
 
+    void loadSettings();
     void ensureDateTimeFieldsValidity();
     QString sanitizeCustomClaimValue(QString);
 };

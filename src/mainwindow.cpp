@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include "constants.h"
+
 #include <l8w8jwt/base64.h>
 #include <l8w8jwt/encode.h>
 #include <l8w8jwt/decode.h>
@@ -8,6 +10,7 @@
 
 #include <QTimer>
 #include <QDateTime>
+#include <QSettings>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QMessageBox>
@@ -26,6 +29,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->labelVersionNumbers->setText(QString("lib/l8w8jwt version: %1").arg(L8W8JWT_VERSION_STR));
 
+    loadSettings();
+
     on_textEditSigningKey_textChanged();
     on_textEditEncodeOutput_textChanged();
     on_textEditDecodeOutput_textChanged();
@@ -34,7 +39,97 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow()
 {
+    QSettings settings;
+
+    settings.setValue(Constants::Settings::saveClaimsOnQuit, QVariant(ui->checkBoxSaveClaims->isChecked()));
+    settings.setValue(Constants::Settings::saveWindowSizeOnQuit, QVariant(ui->checkBoxSaveWindowSizeOnQuit->isChecked()));
+    settings.setValue(Constants::Settings::selectTextOnFocus, QVariant(ui->checkBoxSelectTextFieldContentOnFocus->isChecked()));
+
+    const bool saveWindow = ui->checkBoxSaveWindowSizeOnQuit->isChecked();
+    const bool saveClaims = ui->checkBoxSaveClaims->isChecked();
+
+    if (saveWindow)
+    {
+        settings.setValue(Constants::Settings::windowWidth, QVariant(width()));
+        settings.setValue(Constants::Settings::windowHeight, QVariant(height()));
+    }
+
+    if (saveClaims)
+    {
+        settings.setValue(Constants::Settings::issuer, QVariant(QString(ui->lineEditIssuer->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
+        settings.setValue(Constants::Settings::subject, QVariant(QString(ui->lineEditSubject->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
+        settings.setValue(Constants::Settings::audience, QVariant(QString(ui->lineEditAudience->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
+
+        QString customClaims;
+        customClaims.reserve(512);
+
+        for (int i = 0; i < ui->listWidgetCustomClaims->count(); ++i)
+        {
+            const QListWidgetItem* customClaimListWidgetItem = ui->listWidgetCustomClaims->item(i);
+            const QString encodedClaim = customClaimListWidgetItem->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+
+            customClaims += encodedClaim;
+
+            if (i != ui->listWidgetCustomClaims->count() - 1)
+            {
+                customClaims += ',';
+            }
+        }
+
+        settings.setValue(Constants::Settings::customClaims, QVariant(customClaims));
+    }
+
     delete ui;
+}
+
+static inline QString decodeClaim(QString encodedClaim)
+{
+    const QByteArray::FromBase64Result decodedUtf8 = QByteArray::fromBase64Encoding(encodedClaim.toUtf8(), QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals | QByteArray::AbortOnBase64DecodingErrors);
+    return decodedUtf8.decodingStatus == QByteArray::Base64DecodingStatus::Ok ? decodedUtf8.decoded : QString();
+}
+
+void MainWindow::loadSettings()
+{
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings settings;
+
+    const bool saveClaims = settings.value(Constants::Settings::saveClaimsOnQuit, QVariant(true)).toBool();
+    const bool saveWindow = settings.value(Constants::Settings::saveWindowSizeOnQuit, QVariant(false)).toBool();
+    const bool selectTextOnFocus = settings.value(Constants::Settings::selectTextOnFocus, QVariant(true)).toBool();
+
+    ui->checkBoxSaveClaims->setChecked(saveClaims);
+    ui->checkBoxSaveWindowSizeOnQuit->setChecked(saveWindow);
+    ui->checkBoxSelectTextFieldContentOnFocus->setChecked(selectTextOnFocus);
+
+    if (saveClaims)
+    {
+        const QString iss = settings.value(Constants::Settings::issuer, QVariant(QString())).toString();
+        const QString sub = settings.value(Constants::Settings::subject, QVariant(QString())).toString();
+        const QString aud = settings.value(Constants::Settings::audience, QVariant(QString())).toString();
+        const QString customClaims = settings.value(Constants::Settings::customClaims, QVariant(QString())).toString();
+
+        ui->lineEditIssuer->setText(decodeClaim(iss));
+        ui->lineEditSubject->setText(decodeClaim(sub));
+        ui->lineEditAudience->setText(decodeClaim(aud));
+
+        for (QString customClaim : customClaims.split(','))
+        {
+            const QString decodedClaim = decodeClaim(customClaim);
+
+            if (decodedClaim.isEmpty())
+                continue;
+
+            ui->listWidgetCustomClaims->addItem(decodedClaim);
+        }
+    }
+
+    if (saveWindow)
+    {
+        const int w = settings.value(Constants::Settings::windowWidth, QVariant(minimumSize().width())).toInt();
+        const int h = settings.value(Constants::Settings::windowHeight, QVariant(minimumSize().height())).toInt();
+
+        this->resize(w > 0 ? w : -w, h > 0 ? h : -h);
+    }
 }
 
 void MainWindow::on_pushButtonNotBeforeAutoSet_clicked()
@@ -355,6 +450,8 @@ static inline int jwtAlgoFromString(const QString alg)
             return L8W8JWT_ALG_ES512;
         case 23877:
             return L8W8JWT_ALG_ES256K;
+        case 3084:
+            return L8W8JWT_ALG_ED25519;
         default:
             return -1;
     }
@@ -536,9 +633,30 @@ void MainWindow::on_pushButtonShowSigningKeyPassword_released()
 
 void MainWindow::onChangedFocus(QWidget*, QWidget* newlyFocusedWidget)
 {
+    {
+        QSettings settings;
+
+        if (!settings.value(Constants::Settings::selectTextOnFocus, QVariant(true)).toBool())
+        {
+            return;
+        }
+    }
+
     if (newlyFocusedWidget == ui->lineEditSigningKeyPassword)
     {
         QTimer::singleShot(0, ui->lineEditSigningKeyPassword, &QLineEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->lineEditIssuer)
+    {
+        QTimer::singleShot(0, ui->lineEditIssuer, &QLineEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->lineEditSubject)
+    {
+        QTimer::singleShot(0, ui->lineEditSubject, &QLineEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->lineEditAudience)
+    {
+        QTimer::singleShot(0, ui->lineEditAudience, &QLineEdit::selectAll);
     }
     else if (newlyFocusedWidget == ui->textEditSigningKey)
     {

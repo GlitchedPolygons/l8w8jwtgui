@@ -11,6 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(L8W8JWT_ENABLE_EDDSA "Build l8w8jwt with support for EdDSA (Ed25519) signing enabled." ON)
+
 if (WIN32)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -wd5105")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd5105")
