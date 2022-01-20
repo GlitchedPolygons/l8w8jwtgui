@@ -54,11 +54,23 @@ private slots:
 
     void onChangedFocus(QWidget*, QWidget*);
 
+    void on_pushButtonClearKeyPair_clicked();
+
+    void on_pushButtonGenerateKeyPair_clicked();
+
+    void on_textEditKeygenPublicKey_textChanged();
+
+    void on_textEditKeygenPrivateKey_textChanged();
+
+    void on_comboBoxKeygenKeyType_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow* ui;
 
     void loadSettings();
     void ensureDateTimeFieldsValidity();
+    void generateRsaKeyPair();
+    void generateSecp256k1KeyPair();
     QString sanitizeCustomClaimValue(QString);
 };
 #endif // MAINWINDOW_H

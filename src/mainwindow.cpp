@@ -8,6 +8,15 @@
 #include <l8w8jwt/decode.h>
 #include <l8w8jwt/version.h>
 
+#include <mbedtls/pk.h>
+#include <mbedtls/error.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/bignum.h>
+#include <mbedtls/x509.h>
+#include <mbedtls/rsa.h>
+#include <mbedtls/platform.h>
+
 #include <QTimer>
 #include <QDateTime>
 #include <QSettings>
@@ -34,6 +43,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     on_textEditSigningKey_textChanged();
     on_textEditEncodeOutput_textChanged();
     on_textEditDecodeOutput_textChanged();
+    on_textEditKeygenPublicKey_textChanged();
     on_listWidgetCustomClaims_itemSelectionChanged();
 }
 
@@ -678,4 +688,148 @@ void MainWindow::onChangedFocus(QWidget*, QWidget* newlyFocusedWidget)
     {
         QTimer::singleShot(0, ui->textEditSignatureVerificationKey, &QTextEdit::selectAll);
     }
+    else if (newlyFocusedWidget == ui->textEditKeygenPrivateKey)
+    {
+        QTimer::singleShot(0, ui->textEditKeygenPrivateKey, &QTextEdit::selectAll);
+    }
+    else if (newlyFocusedWidget == ui->textEditKeygenPublicKey)
+    {
+        QTimer::singleShot(0, ui->textEditKeygenPublicKey, &QTextEdit::selectAll);
+    }
 }
+
+void MainWindow::on_pushButtonClearKeyPair_clicked()
+{
+    ui->textEditKeygenPrivateKey->clear();
+    ui->textEditKeygenPublicKey->clear();
+}
+
+void MainWindow::generateRsaKeyPair()
+{
+    mbedtls_pk_context pk;
+    mbedtls_entropy_context entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+
+    static constexpr int PEM_BUFFER_SIZE = 8192;
+
+    unsigned char* publicKeyPem = nullptr;
+    unsigned char* privateKeyPem = nullptr;
+
+    try
+    {
+        publicKeyPem = new unsigned char[PEM_BUFFER_SIZE];
+        privateKeyPem = new unsigned char[PEM_BUFFER_SIZE];
+    }
+    catch (const std::bad_alloc& exception)
+    {
+        QMessageBox error;
+        error.setIcon(QMessageBox::Critical);
+        error.setText(QString("❌ Failed to allocate memory for holding the PEM-formatted output RSA key pairs! Are we out of memory? Uh ohhh...."));
+        error.exec();
+
+        QCoreApplication::quit();
+        std::this_thread::sleep_for(std::chrono::milliseconds(256));
+        throw exception;
+    }
+
+    memset(publicKeyPem, 0x00, PEM_BUFFER_SIZE);
+    memset(privateKeyPem, 0x00, PEM_BUFFER_SIZE);
+
+    const char* pers = "rsa_genkey"; // TODO: create entropy collection dialog!
+
+    mbedtls_ctr_drbg_init(&ctr_drbg);
+    mbedtls_entropy_init(&entropy);
+    mbedtls_pk_init(&pk);
+
+    int r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, strlen(pers));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_ctr_drbg_seed\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_setup(&pk, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_pk_setup\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_rsa_gen_key(mbedtls_pk_rsa(pk), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_rsa_gen_key\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_rsa_check_pubkey(mbedtls_pk_rsa(pk));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_rsa_check_pubkey\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_rsa_check_privkey(mbedtls_pk_rsa(pk));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_rsa_check_privkey\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_write_pubkey_pem(&pk, publicKeyPem, PEM_BUFFER_SIZE);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_pk_write_pubkey_pem\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_write_key_pem(&pk, privateKeyPem, PEM_BUFFER_SIZE);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_pk_write_key_pem\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    ui->textEditKeygenPrivateKey->setText(QString(reinterpret_cast<char*>(privateKeyPem)));
+    ui->textEditKeygenPublicKey->setText(QString(reinterpret_cast<char*>(publicKeyPem)));
+
+exit:
+    mbedtls_pk_free(&pk);
+    mbedtls_entropy_free(&entropy);
+    mbedtls_ctr_drbg_free(&ctr_drbg);
+    delete[] privateKeyPem;
+    delete[] publicKeyPem;
+}
+
+void MainWindow::generateSecp256k1KeyPair()
+{
+    //
+}
+
+void MainWindow::on_pushButtonGenerateKeyPair_clicked()
+{
+    ui->textEditKeygenPublicKey->setText(QString("⏳ Generating..."));
+    ui->textEditKeygenPrivateKey->clear();
+    repaint();
+
+    switch (ui->comboBoxKeygenKeyType->currentIndex())
+    {
+        case 0:
+            generateRsaKeyPair();
+            break;
+
+            // TODO: other key types!
+    }
+}
+
+void MainWindow::on_textEditKeygenPublicKey_textChanged()
+{
+    ui->pushButtonClearKeyPair->setEnabled(!ui->textEditKeygenPublicKey->toPlainText().isEmpty() || !ui->textEditKeygenPrivateKey->toPlainText().isEmpty());
+}
+
+void MainWindow::on_textEditKeygenPrivateKey_textChanged()
+{
+    ui->pushButtonClearKeyPair->setEnabled(!ui->textEditKeygenPublicKey->toPlainText().isEmpty() || !ui->textEditKeygenPrivateKey->toPlainText().isEmpty());
+}
+
+void MainWindow::on_comboBoxKeygenKeyType_currentIndexChanged(int index) { }

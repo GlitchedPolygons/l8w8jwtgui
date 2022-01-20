@@ -279,7 +279,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>9</hour>
+                  <hour>8</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -357,7 +357,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>9</hour>
+                  <hour>8</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -367,7 +367,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>9</hour>
+                  <hour>8</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -681,6 +681,9 @@
         <string>Decode / Verify</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>8</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayoutDecodeJwt">
           <item>
@@ -826,11 +829,130 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tabKeygen">
+       <attribute name="title">
+        <string>Keygen</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="spacing">
+         <number>8</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutComboBoxKeygenKeyType">
+          <item>
+           <widget class="QLabel" name="labelKeygenKeyType">
+            <property name="text">
+             <string>Key type</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBoxKeygenKeyType">
+            <item>
+             <property name="text">
+              <string>RSA (4096-bit)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>prime256v1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>secp384r1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>secp521r1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>secp256k1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ed25519</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelKeygenKeyTypeDesc">
+          <property name="text">
+           <string>Used in JWT algs: &quot;RS256&quot;, &quot;RS384&quot;, &quot;RS512&quot;, &quot;PS256&quot;, &quot;PS384&quot;, &quot;PS512&quot;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayoutKeygenButtons">
+          <item>
+           <widget class="QPushButton" name="pushButtonGenerateKeyPair">
+            <property name="text">
+             <string>Generate key pair</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonClearKeyPair">
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutKeygenPublicKeyOutput">
+          <item>
+           <widget class="QLabel" name="labelKeygenPublicKey">
+            <property name="text">
+             <string>Public key</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditKeygenPublicKey">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayoutKeygenPrivateKeyOutput">
+          <item>
+           <widget class="QLabel" name="labelKeygenPrivateKey">
+            <property name="text">
+             <string>Private key</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="textEditKeygenPrivateKey">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tabSettings">
        <attribute name="title">
         <string>Settings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>8</number>
+        </property>
         <item>
          <widget class="QCheckBox" name="checkBoxSaveClaims">
           <property name="text">
@@ -1318,7 +1440,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>550</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>

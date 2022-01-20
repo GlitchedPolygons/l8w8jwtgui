@@ -38,7 +38,13 @@ set(APP_ICON_MACOSX ${CMAKE_CURRENT_LIST_DIR}/img/icon.icns)
 set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 # Add the lib/l8w8jwt git submodule as a CMake subdirectory for easy integration
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt")
+if (NOT TARGET l8w8jwt)
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt")
+endif()
+
+if (NOT TARGET mbedtls)
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/mbedtls")
+endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(l8w8jwtgui
@@ -71,6 +77,10 @@ endif ()
 target_link_libraries(l8w8jwtgui
     PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
     PRIVATE l8w8jwt
+)
+
+target_include_directories(l8w8jwtgui
+    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/mbedtls/include"
 )
 
 set_target_properties(l8w8jwtgui PROPERTIES
