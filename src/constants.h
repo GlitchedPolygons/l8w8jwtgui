@@ -7,6 +7,9 @@ struct Constants
     static inline const char* appVersion = "1.0.0";
     static inline const char* orgName = "Glitched Polygons";
     static inline const char* orgDomain = "glitchedpolygons.com";
+    static constexpr unsigned char iatToleranceSeconds = 8;
+    static constexpr unsigned char expToleranceSeconds = 8;
+    static constexpr unsigned char nbfToleranceSeconds = 8;
 
     struct Settings
     {

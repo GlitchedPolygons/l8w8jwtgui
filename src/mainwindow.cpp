@@ -244,7 +244,7 @@ void MainWindow::on_pushButtonAddCustomClaim_clicked()
         {
             const QString claimValue = sanitizeCustomClaimValue(text);
 
-            ui->listWidgetCustomClaims->addItem(QString("\"%1\": %2").arg(claimName).arg(claimValue));
+            ui->listWidgetCustomClaims->addItem(QString("\"%1\": %2").arg(claimName, claimValue));
             on_listWidgetCustomClaims_itemSelectionChanged();
         }
     }
@@ -527,9 +527,6 @@ void MainWindow::on_pushButtonDecode_clicked()
         return;
     }
 
-    const QString headerJsonString = QString::fromUtf8(headerJsonUtf8.decoded);
-    const QString payloadJsonString = QString::fromUtf8(payloadJsonUtf8.decoded);
-
     const QString signatureVerificationKey = ui->textEditSignatureVerificationKey->toPlainText().trimmed();
     const QByteArray signatureVerificationKeyUtf8 = signatureVerificationKey.toUtf8();
 
@@ -544,12 +541,12 @@ void MainWindow::on_pushButtonDecode_clicked()
     QString result;
     result.reserve(256);
 
-    decodingParams.iat_tolerance_seconds = 8;
-    decodingParams.exp_tolerance_seconds = 8;
-    decodingParams.nbf_tolerance_seconds = 8;
     decodingParams.validate_iat = 1;
     decodingParams.validate_exp = 1;
     decodingParams.validate_nbf = 1;
+    decodingParams.iat_tolerance_seconds = Constants::iatToleranceSeconds;
+    decodingParams.exp_tolerance_seconds = Constants::expToleranceSeconds;
+    decodingParams.nbf_tolerance_seconds = Constants::nbfToleranceSeconds;
     decodingParams.verification_key = (unsigned char*)const_cast<char*>(signatureVerificationKeyUtf8.constData());
     decodingParams.verification_key_length = signatureVerificationKeyUtf8.length();
 
@@ -615,7 +612,7 @@ void MainWindow::on_pushButtonDecode_clicked()
         result += QString(nbfFailure ? "❌ nbf: Token not yet valid or \"nbf\" claim value unrecognized/invalid.\n" : "✅ nbf: Verified.\n");
     }
 
-    result += QString("\n✅ Decoded header:\n%1\n✅ Decoded payload:\n%2\n").arg(headerJsonDocument.toJson()).arg(payloadJsonDocument.toJson());
+    result += QString("\n✅ Decoded header:\n%1\n✅ Decoded payload:\n%2\n").arg(headerJsonDocument.toJson(), payloadJsonDocument.toJson());
 
     ui->textEditDecodeOutput->setText(result);
 }
@@ -635,6 +632,14 @@ void MainWindow::on_textEditSignatureVerificationKey_textChanged()
 void MainWindow::on_textEditSigningKey_textChanged()
 {
     ui->pushButtonEncodeAndSign->setEnabled(!ui->textEditSigningKey->toPlainText().isEmpty());
+
+    if (ui->comboBoxAlgo->currentIndex() < 4 && ui->textEditSigningKey->toPlainText().startsWith("-----BEGIN"))
+    {
+        QMessageBox warning;
+        warning.setIcon(QMessageBox::Warning);
+        warning.setText(QString("⚠ WARNING: It seems that you have entered a PEM-formatted signing key.\n\nThese are used for the asymmetric JWT signing algorithms (such as \"PS256\", \"ES256\", etc...) but you have selected a JWT signing algorithm from the \"HS\" family (which uses a symmetric HMAC secret for generating the signature).\n\nIt might be that signing the output token symmetrically with the value of an asymmetric signing key is not what you want, and that maybe you just forgot to switch the JWT algorithm to the corresponding alg claim value in the dropdown on the left?\n\nIf not, never mind :)"));
+        warning.exec();
+    }
 }
 
 void MainWindow::on_pushButtonShowSigningKeyPassword_pressed()
@@ -649,7 +654,7 @@ void MainWindow::on_pushButtonShowSigningKeyPassword_released()
     ui->pushButtonShowSigningKeyPassword->setText("Show");
 }
 
-void MainWindow::onChangedFocus(QWidget*, QWidget* newlyFocusedWidget)
+void MainWindow::onChangedFocus(QWidget* oldWidget, QWidget* newlyFocusedWidget)
 {
     {
         QSettings settings;
@@ -660,45 +665,30 @@ void MainWindow::onChangedFocus(QWidget*, QWidget* newlyFocusedWidget)
         }
     }
 
-    if (newlyFocusedWidget == ui->lineEditSigningKeyPassword)
+    QLineEdit* oldWidgetLineEdit = dynamic_cast<QLineEdit*>(oldWidget);
+    QTextEdit* oldWidgetTextEdit = dynamic_cast<QTextEdit*>(oldWidget);
+
+    QLineEdit* newWidgetLineEdit = dynamic_cast<QLineEdit*>(newlyFocusedWidget);
+    QTextEdit* newWidgetTextEdit = dynamic_cast<QTextEdit*>(newlyFocusedWidget);
+
+    if (oldWidgetLineEdit != nullptr)
     {
-        QTimer::singleShot(0, ui->lineEditSigningKeyPassword, &QLineEdit::selectAll);
+        oldWidgetLineEdit->deselect();
     }
-    else if (newlyFocusedWidget == ui->lineEditIssuer)
+    else if (oldWidgetTextEdit != nullptr)
     {
-        QTimer::singleShot(0, ui->lineEditIssuer, &QLineEdit::selectAll);
+        QTextCursor cursor = oldWidgetTextEdit->textCursor();
+        cursor.movePosition(QTextCursor::End);
+        oldWidgetTextEdit->setTextCursor(cursor);
     }
-    else if (newlyFocusedWidget == ui->lineEditSubject)
+
+    if (newWidgetLineEdit != nullptr)
     {
-        QTimer::singleShot(0, ui->lineEditSubject, &QLineEdit::selectAll);
+        QTimer::singleShot(0, newWidgetLineEdit, &QLineEdit::selectAll);
     }
-    else if (newlyFocusedWidget == ui->lineEditAudience)
+    else if (newWidgetTextEdit != nullptr)
     {
-        QTimer::singleShot(0, ui->lineEditAudience, &QLineEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditSigningKey)
-    {
-        QTimer::singleShot(0, ui->textEditSigningKey, &QTextEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditEncodeOutput)
-    {
-        QTimer::singleShot(0, ui->textEditEncodeOutput, &QTextEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditDecodeJwt)
-    {
-        QTimer::singleShot(0, ui->textEditDecodeJwt, &QTextEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditSignatureVerificationKey)
-    {
-        QTimer::singleShot(0, ui->textEditSignatureVerificationKey, &QTextEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditKeygenPrivateKey)
-    {
-        QTimer::singleShot(0, ui->textEditKeygenPrivateKey, &QTextEdit::selectAll);
-    }
-    else if (newlyFocusedWidget == ui->textEditKeygenPublicKey)
-    {
-        QTimer::singleShot(0, ui->textEditKeygenPublicKey, &QTextEdit::selectAll);
+        QTimer::singleShot(0, newWidgetTextEdit, &QTextEdit::selectAll);
     }
 }
 
@@ -801,6 +791,8 @@ exit:
     mbedtls_pk_free(&pk);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
+    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
     delete[] privateKeyPem;
     delete[] publicKeyPem;
 }
@@ -884,6 +876,8 @@ exit:
     mbedtls_pk_free(&pk);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
+    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
     delete[] privateKeyPem;
     delete[] publicKeyPem;
 }
@@ -903,6 +897,7 @@ void MainWindow::generateEddsaKeyPair()
     if (r != 0)
     {
         ui->textEditKeygenPublicKey->setText(QString("❌ Failed to collect 32B of entropy from OS for generating the Ed25519 key pair! \"ed25519_create_seed\" returned error code: %1").arg(r));
+        goto exit;
     }
 
     // TODO: collect 32B of entropy via dialog here and put into entropy+32
@@ -912,6 +907,7 @@ void MainWindow::generateEddsaKeyPair()
     if (r != 0)
     {
         ui->textEditKeygenPublicKey->setText(QString("❌ Failed to hash the collected entropy into a usable 32B seed for generating the Ed25519 key pair! \"mbedtls_sha256\" returned error code: %1").arg(r));
+        goto exit;
     }
 
     ed25519_create_keypair_ref10(publicKey, privateKey, seed);
@@ -928,6 +924,15 @@ void MainWindow::generateEddsaKeyPair()
 
     ui->textEditKeygenPublicKey->setText(QString(publicKeyHexString));
     ui->textEditKeygenPrivateKey->setText(QString(privateKeyHexString));
+
+exit:
+
+    mbedtls_platform_zeroize(seed, sizeof(seed));
+    mbedtls_platform_zeroize(entropy, sizeof(entropy));
+    mbedtls_platform_zeroize(publicKey, sizeof(publicKey));
+    mbedtls_platform_zeroize(privateKey, sizeof(privateKey));
+    mbedtls_platform_zeroize(publicKeyHexString, sizeof(publicKeyHexString));
+    mbedtls_platform_zeroize(privateKeyHexString, sizeof(privateKeyHexString));
 }
 
 void MainWindow::on_pushButtonGenerateKeyPair_clicked()
