@@ -279,7 +279,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>8</hour>
+                  <hour>7</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -357,7 +357,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>8</hour>
+                  <hour>7</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -367,7 +367,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>8</hour>
+                  <hour>7</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -1440,7 +1440,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>550</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

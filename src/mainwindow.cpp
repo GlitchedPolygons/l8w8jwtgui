@@ -971,5 +971,28 @@ void MainWindow::on_textEditKeygenPrivateKey_textChanged()
 
 void MainWindow::on_comboBoxKeygenKeyType_currentIndexChanged(int index)
 {
-    // TODO: update label with the JWT alg preview (e.g. this one's used in ES256, ES256K, etc...)
+    switch (index)
+    {
+        case 0:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT algs: \"RS256\", \"RS384\", \"RS512\", \"PS256\", \"PS384\", \"PS512\"");
+            break;
+        case 1:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT alg: \"ES256\"");
+            break;
+        case 2:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT alg: \"ES384\"");
+            break;
+        case 3:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT alg: \"ES512\"");
+            break;
+        case 4:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT alg: \"ES256K\"");
+            break;
+        case 5:
+            ui->labelKeygenKeyTypeDesc->setText("Used in JWT alg: \"EdDSA\"");
+            break;
+        default:
+            ui->labelKeygenKeyTypeDesc->setText("");
+            break;
+    }
 }
