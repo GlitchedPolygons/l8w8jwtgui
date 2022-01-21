@@ -70,7 +70,8 @@ private:
     void loadSettings();
     void ensureDateTimeFieldsValidity();
     void generateRsaKeyPair();
-    void generateSecp256k1KeyPair();
+    void generateEddsaKeyPair();
+    void generateEcdsaKeyPair(int keyType);
     QString sanitizeCustomClaimValue(QString);
 };
 #endif // MAINWINDOW_H

@@ -15,6 +15,7 @@
 #include <mbedtls/bignum.h>
 #include <mbedtls/x509.h>
 #include <mbedtls/rsa.h>
+#include <mbedtls/ecdsa.h>
 #include <mbedtls/platform.h>
 
 #include <QTimer>
@@ -737,9 +738,9 @@ void MainWindow::generateRsaKeyPair()
 
     const char* pers = "rsa_genkey"; // TODO: create entropy collection dialog!
 
-    mbedtls_ctr_drbg_init(&ctr_drbg);
-    mbedtls_entropy_init(&entropy);
     mbedtls_pk_init(&pk);
+    mbedtls_entropy_init(&entropy);
+    mbedtls_ctr_drbg_init(&ctr_drbg);
 
     int r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, strlen(pers));
     if (r != 0)
@@ -801,9 +802,92 @@ exit:
     delete[] publicKeyPem;
 }
 
-void MainWindow::generateSecp256k1KeyPair()
+void MainWindow::generateEcdsaKeyPair(int keyType)
 {
-    //
+    mbedtls_pk_context pk;
+    mbedtls_entropy_context entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+
+    static constexpr int PEM_BUFFER_SIZE = 1024;
+
+    unsigned char* publicKeyPem = nullptr;
+    unsigned char* privateKeyPem = nullptr;
+
+    try
+    {
+        publicKeyPem = new unsigned char[PEM_BUFFER_SIZE];
+        privateKeyPem = new unsigned char[PEM_BUFFER_SIZE];
+    }
+    catch (const std::bad_alloc& exception)
+    {
+        QMessageBox error;
+        error.setIcon(QMessageBox::Critical);
+        error.setText(QString("❌ Failed to allocate memory for holding the PEM-formatted output ECDSA key pairs! Are we out of memory? Uh ohh..."));
+        error.exec();
+
+        QCoreApplication::quit();
+        std::this_thread::sleep_for(std::chrono::milliseconds(256));
+        throw exception;
+    }
+
+    memset(publicKeyPem, 0x00, PEM_BUFFER_SIZE);
+    memset(privateKeyPem, 0x00, PEM_BUFFER_SIZE);
+
+    const char* pers = "ecdsa_genkey"; // TODO: create entropy collection dialog!
+
+    mbedtls_pk_init(&pk);
+    mbedtls_entropy_init(&entropy);
+    mbedtls_ctr_drbg_init(&ctr_drbg);
+
+    int r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, strlen(pers));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_ctr_drbg_seed\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_setup(&pk, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_pk_setup\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_ecdsa_genkey(mbedtls_pk_ec(pk), static_cast<mbedtls_ecp_group_id>(keyType), mbedtls_ctr_drbg_random, &ctr_drbg);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_ecdsa_genkey\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_write_pubkey_pem(&pk, publicKeyPem, PEM_BUFFER_SIZE);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_pk_write_pubkey_pem\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_pk_write_key_pem(&pk, privateKeyPem, PEM_BUFFER_SIZE);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_pk_write_key_pem\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    ui->textEditKeygenPrivateKey->setText(QString(reinterpret_cast<char*>(privateKeyPem)));
+    ui->textEditKeygenPublicKey->setText(QString(reinterpret_cast<char*>(publicKeyPem)));
+
+exit:
+    mbedtls_pk_free(&pk);
+    mbedtls_entropy_free(&entropy);
+    mbedtls_ctr_drbg_free(&ctr_drbg);
+    delete[] privateKeyPem;
+    delete[] publicKeyPem;
+}
+
+void MainWindow::generateEddsaKeyPair()
+{
+    // TODO: implement ed25519 key generation here
 }
 
 void MainWindow::on_pushButtonGenerateKeyPair_clicked()
@@ -817,8 +901,21 @@ void MainWindow::on_pushButtonGenerateKeyPair_clicked()
         case 0:
             generateRsaKeyPair();
             break;
-
-            // TODO: other key types!
+        case 1:
+            generateEcdsaKeyPair(MBEDTLS_ECP_DP_SECP256R1);
+            break;
+        case 2:
+            generateEcdsaKeyPair(MBEDTLS_ECP_DP_SECP384R1);
+            break;
+        case 3:
+            generateEcdsaKeyPair(MBEDTLS_ECP_DP_SECP521R1);
+            break;
+        case 4:
+            generateEcdsaKeyPair(MBEDTLS_ECP_DP_SECP256K1);
+            break;
+        case 5:
+            generateEddsaKeyPair();
+            break;
     }
 }
 
@@ -832,4 +929,7 @@ void MainWindow::on_textEditKeygenPrivateKey_textChanged()
     ui->pushButtonClearKeyPair->setEnabled(!ui->textEditKeygenPublicKey->toPlainText().isEmpty() || !ui->textEditKeygenPrivateKey->toPlainText().isEmpty());
 }
 
-void MainWindow::on_comboBoxKeygenKeyType_currentIndexChanged(int index) { }
+void MainWindow::on_comboBoxKeygenKeyType_currentIndexChanged(int index)
+{
+    // TODO: update label with the JWT alg preview (e.g. this one's used in ES256, ES256K, etc...)
+}
