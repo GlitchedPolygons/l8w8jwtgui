@@ -8,6 +8,8 @@
 #include <l8w8jwt/decode.h>
 #include <l8w8jwt/version.h>
 
+#include <ed25519.h>
+
 #include <mbedtls/pk.h>
 #include <mbedtls/error.h>
 #include <mbedtls/entropy.h>
@@ -17,6 +19,7 @@
 #include <mbedtls/rsa.h>
 #include <mbedtls/ecdsa.h>
 #include <mbedtls/platform.h>
+#include <mbedtls/sha256.h>
 
 #include <QTimer>
 #include <QDateTime>
@@ -887,7 +890,44 @@ exit:
 
 void MainWindow::generateEddsaKeyPair()
 {
-    // TODO: implement ed25519 key generation here
+    unsigned char seed[32];
+    unsigned char entropy[64];
+    unsigned char publicKey[32];
+    unsigned char privateKey[64];
+
+    char publicKeyHexString[64 + 1] = { 0x00 };
+    char privateKeyHexString[128 + 1] = { 0x00 };
+
+    int r = ed25519_create_seed(entropy);
+
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to collect 32B of entropy from OS for generating the Ed25519 key pair! \"ed25519_create_seed\" returned error code: %1").arg(r));
+    }
+
+    // TODO: collect 32B of entropy via dialog here and put into entropy+32
+
+    r = mbedtls_sha256(entropy, sizeof(entropy), seed, 0);
+
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to hash the collected entropy into a usable 32B seed for generating the Ed25519 key pair! \"mbedtls_sha256\" returned error code: %1").arg(r));
+    }
+
+    ed25519_create_keypair_ref10(publicKey, privateKey, seed);
+
+    for (int i = 0; i < sizeof(publicKey); ++i)
+    {
+        sprintf(publicKeyHexString + i * 2, "%02x", publicKey[i]);
+    }
+
+    for (int i = 0; i < sizeof(privateKey); ++i)
+    {
+        sprintf(privateKeyHexString + i * 2, "%02x", privateKey[i]);
+    }
+
+    ui->textEditKeygenPublicKey->setText(QString(publicKeyHexString));
+    ui->textEditKeygenPrivateKey->setText(QString(privateKeyHexString));
 }
 
 void MainWindow::on_pushButtonGenerateKeyPair_clicked()

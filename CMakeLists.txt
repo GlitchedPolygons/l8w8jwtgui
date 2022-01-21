@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(l8w8jwtgui VERSION 1.0.0 LANGUAGES CXX)
+project(l8w8jwtgui VERSION 1.0.0 LANGUAGES CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -11,7 +11,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(L8W8JWT_ENABLE_EDDSA "Build l8w8jwt with support for EdDSA (Ed25519) signing enabled." ON)
+set(L8W8JWT_ENABLE_EDDSA "Build l8w8jwt with support for EdDSA (Ed25519) signing enabled." ON)
 
 if (WIN32)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -wd5105")
@@ -27,6 +27,27 @@ set(PROJECT_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.h
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.ui
+)
+
+set(ED25519_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/add_scalar.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/ed25519.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/fe.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/fe.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/fixedint.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/ge.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/ge.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/key_convert.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/key_exchange.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/keypair.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/precomp_data.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/sc.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/sc.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/seed.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/sha512.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/sha512.h
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/sign.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src/verify.c
 )
 
 # Windows Icon
@@ -50,6 +71,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(l8w8jwtgui
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${ED25519_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET l8w8jwtgui APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -81,6 +103,7 @@ target_link_libraries(l8w8jwtgui
 
 target_include_directories(l8w8jwtgui
     PRIVATE "${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/mbedtls/include"
+    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/lib/l8w8jwt/lib/ed25519/src"
 )
 
 set_target_properties(l8w8jwtgui PROPERTIES
