@@ -126,7 +126,7 @@ void MainWindow::loadSettings()
         ui->lineEditSubject->setText(decodeClaim(sub));
         ui->lineEditAudience->setText(decodeClaim(aud));
 
-        for (QString customClaim : customClaims.split(','))
+        for (const QString& customClaim : customClaims.split(','))
         {
             const QString decodedClaim = decodeClaim(customClaim);
 

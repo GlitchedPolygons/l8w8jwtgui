@@ -21,6 +21,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>6</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="tabShape">
@@ -37,6 +40,9 @@
         <string>Encode / Sign</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayoutClaims">
           <property name="spacing">
@@ -282,7 +288,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>7</hour>
+                  <hour>6</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -360,7 +366,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>7</hour>
+                  <hour>6</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -370,7 +376,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>7</hour>
+                  <hour>6</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
