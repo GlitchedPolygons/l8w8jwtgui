@@ -27,6 +27,9 @@ set(PROJECT_SOURCES
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.h
         ${CMAKE_CURRENT_LIST_DIR}/src/mainwindow.ui
+        ${CMAKE_CURRENT_LIST_DIR}/src/entropydialog.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/entropydialog.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/entropydialog.ui
 )
 
 set(ED25519_SOURCES

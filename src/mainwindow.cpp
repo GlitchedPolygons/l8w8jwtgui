@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "entropydialog.h"
 
 #include "constants.h"
 
@@ -892,6 +893,9 @@ void MainWindow::generateEddsaKeyPair()
     char publicKeyHexString[64 + 1] = { 0x00 };
     char privateKeyHexString[128 + 1] = { 0x00 };
 
+    EntropyDialog entropyDialog(this);
+    entropyDialog.setModal(true);
+
     int r = ed25519_create_seed(entropy);
 
     if (r != 0)
@@ -900,6 +904,8 @@ void MainWindow::generateEddsaKeyPair()
         goto exit;
     }
 
+    entropyDialog.show();
+    entropyDialog.exec();
     // TODO: collect 32B of entropy via dialog here and put into entropy+32
 
     r = mbedtls_sha256(entropy, sizeof(entropy), seed, 0);
