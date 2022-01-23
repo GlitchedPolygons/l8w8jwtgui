@@ -638,7 +638,8 @@ void MainWindow::on_textEditSigningKey_textChanged()
     {
         QMessageBox warning;
         warning.setIcon(QMessageBox::Warning);
-        warning.setText(QString("⚠ WARNING: It seems that you have entered a PEM-formatted signing key.\n\nThese are used for the asymmetric JWT signing algorithms (such as \"PS256\", \"ES256\", etc...) but you have selected a JWT signing algorithm from the \"HS\" family (which uses a symmetric HMAC secret for generating the signature).\n\nIt might be that signing the output token symmetrically with the value of an asymmetric signing key is not what you want, and that maybe you just forgot to switch the JWT algorithm to the corresponding alg claim value in the dropdown on the left?\n\nIf not, never mind :)"));
+        warning.setText(QString("⚠ WARNING: It seems that you have entered a PEM-formatted signing key.\n\nThese are used for the asymmetric JWT signing algorithms (such as \"PS256\", \"ES256\", etc...) but you have selected a JWT signing algorithm from the \"HS\" family (which uses a symmetric HMAC secret for generating the signature).\n\nIt might be that signing the output token symmetrically with the value of an asymmetric signing key is not what you want, and that maybe you just forgot to "
+                                "switch the JWT algorithm to the corresponding alg claim value in the dropdown on the left?\n\nIf not, never mind :)"));
         warning.exec();
     }
 }
@@ -730,13 +731,29 @@ void MainWindow::generateRsaKeyPair()
     memset(publicKeyPem, 0x00, PEM_BUFFER_SIZE);
     memset(privateKeyPem, 0x00, PEM_BUFFER_SIZE);
 
-    const char* pers = "rsa_genkey"; // TODO: create entropy collection dialog!
+    unsigned char additionalEntropy[64];
+    unsigned char additionalEntropySHA256[32];
+
+    ed25519_create_seed(additionalEntropy);
 
     mbedtls_pk_init(&pk);
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
 
-    int r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, strlen(pers));
+    EntropyDialog entropyDialog(this); // TODO: cancel key generation if user clicks on "Cancel" button inside entropy collection dialog
+    entropyDialog.setModal(true);
+    entropyDialog.show();
+    entropyDialog.exec();
+    entropyDialog.getCollectedEntropy(additionalEntropy + 32);
+
+    int r = mbedtls_sha256(additionalEntropy, sizeof(additionalEntropy), additionalEntropySHA256, 0);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to hash the collected entropy into a usable 32B seed for generating the ECDSA key pair! \"mbedtls_sha256\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, additionalEntropySHA256, sizeof(additionalEntropySHA256));
     if (r != 0)
     {
         ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate RSA key pair! \"mbedtls_ctr_drbg_seed\" returned error code: %1").arg(r));
@@ -792,8 +809,10 @@ exit:
     mbedtls_pk_free(&pk);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
+    mbedtls_platform_zeroize(publicKeyPem, PEM_BUFFER_SIZE);
     mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
-    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
+    mbedtls_platform_zeroize(additionalEntropy, sizeof(additionalEntropy));
+    mbedtls_platform_zeroize(additionalEntropySHA256, sizeof(additionalEntropySHA256));
     delete[] privateKeyPem;
     delete[] publicKeyPem;
 }
@@ -829,13 +848,29 @@ void MainWindow::generateEcdsaKeyPair(int keyType)
     memset(publicKeyPem, 0x00, PEM_BUFFER_SIZE);
     memset(privateKeyPem, 0x00, PEM_BUFFER_SIZE);
 
-    const char* pers = "ecdsa_genkey"; // TODO: create entropy collection dialog!
+    unsigned char additionalEntropy[64];
+    unsigned char additionalEntropySHA256[32];
+
+    ed25519_create_seed(additionalEntropy);
 
     mbedtls_pk_init(&pk);
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
 
-    int r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char*)pers, strlen(pers));
+    EntropyDialog entropyDialog(this);
+    entropyDialog.setModal(true);
+    entropyDialog.show();
+    entropyDialog.exec();
+    entropyDialog.getCollectedEntropy(additionalEntropy + 32);
+
+    int r = mbedtls_sha256(additionalEntropy, sizeof(additionalEntropy), additionalEntropySHA256, 0);
+    if (r != 0)
+    {
+        ui->textEditKeygenPublicKey->setText(QString("❌ Failed to hash the collected entropy into a usable 32B seed for generating the ECDSA key pair! \"mbedtls_sha256\" returned error code: %1").arg(r));
+        goto exit;
+    }
+
+    r = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, additionalEntropySHA256, sizeof(additionalEntropySHA256));
     if (r != 0)
     {
         ui->textEditKeygenPublicKey->setText(QString("❌ Failed to generate ECDSA key pair! \"mbedtls_ctr_drbg_seed\" returned error code: %1").arg(r));
@@ -877,7 +912,7 @@ exit:
     mbedtls_pk_free(&pk);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
-    mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
+    mbedtls_platform_zeroize(publicKeyPem, PEM_BUFFER_SIZE);
     mbedtls_platform_zeroize(privateKeyPem, PEM_BUFFER_SIZE);
     delete[] privateKeyPem;
     delete[] publicKeyPem;
@@ -906,7 +941,7 @@ void MainWindow::generateEddsaKeyPair()
 
     entropyDialog.show();
     entropyDialog.exec();
-    // TODO: collect 32B of entropy via dialog here and put into entropy+32
+    entropyDialog.getCollectedEntropy(entropy + 32);
 
     r = mbedtls_sha256(entropy, sizeof(entropy), seed, 0);
 

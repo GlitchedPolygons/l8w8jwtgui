@@ -17,28 +17,29 @@ class EntropyDialog : public QDialog
 public:
     explicit EntropyDialog(QWidget* parent = nullptr);
     void getCollectedEntropy(unsigned char outEntropy32B[32]);
-    bool isModified() const { return modified; }
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
-    void paintEvent(QPaintEvent* event) override;
-    void resizeEvent(QResizeEvent* event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     Ui::EntropyDialog* ui;
 
+    void flushEntropyBuffer();
+    void addTimestampToEntropyBuffer();
     void drawLineTo(const QPoint& endPoint);
     void resizeImage(QImage* image, const QSize& newSize);
 
     unsigned char entropy[32];
-    bool modified = false;
     bool scribbling = false;
-    int myPenWidth = 1;
-    QColor myPenColor = Qt::blue;
+    int penWidth = 2;
+    QColor penColor = Qt::blue;
     QImage image;
     QPoint lastPoint;
+    QString entropyBuffer;
 };
 
 #endif // ENTROPYDIALOG_H
