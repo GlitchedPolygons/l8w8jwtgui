@@ -10,6 +10,7 @@ struct Constants
     static constexpr unsigned char iatToleranceSeconds = 8;
     static constexpr unsigned char expToleranceSeconds = 8;
     static constexpr unsigned char nbfToleranceSeconds = 8;
+    static constexpr int minEntropyToCollect = 4096;
 
     struct Settings
     {

@@ -22,8 +22,8 @@ protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
-    void paintEvent(QPaintEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
 private:
     Ui::EntropyDialog* ui;
@@ -36,10 +36,12 @@ private:
     unsigned char entropy[32];
     bool scribbling = false;
     int penWidth = 2;
-    QColor penColor = Qt::blue;
+    size_t collectedEntropy = 0;
+
     QImage image;
     QPoint lastPoint;
     QString entropyBuffer;
+    QColor penColor = QColor(240, 248, 255);
 };
 
 #endif // ENTROPYDIALOG_H

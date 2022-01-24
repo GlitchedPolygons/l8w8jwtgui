@@ -1,5 +1,6 @@
 #include "entropydialog.h"
 #include "./ui_entropydialog.h"
+#include "constants.h"
 
 #include <QPainter>
 #include <QDateTime>
@@ -10,9 +11,12 @@
 #include <mbedtls/base64.h>
 #include <mbedtls/platform_util.h>
 
+// A lot of inspiration for this class was taken from the official Qt Scribble example (https://doc.qt.io/qt-5/qtwidgets-widgets-scribble-example.html)
+
 EntropyDialog::EntropyDialog(QWidget* parent) : QDialog { parent }, ui(new Ui::EntropyDialog)
 {
     ui->setupUi(this);
+    ui->progressBar->setTextVisible(false);
 
     entropyBuffer.reserve(1024);
     ed25519_create_seed(entropy);
@@ -57,7 +61,7 @@ void EntropyDialog::flushEntropyBuffer()
 
 void EntropyDialog::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton && ui->frame->underMouse())
     {
         addTimestampToEntropyBuffer();
         lastPoint = event->pos();
@@ -81,19 +85,36 @@ void EntropyDialog::mouseReleaseEvent(QMouseEvent* event)
         flushEntropyBuffer();
         scribbling = false;
     }
+
+    repaint();
 }
 
 void EntropyDialog::drawLineTo(const QPoint& endPoint)
 {
+    if (!scribbling || !ui->frame->geometry().contains(endPoint))
+    {
+        return;
+    }
+
     QPainter painter(&image);
     painter.setPen(QPen(penColor, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
 
-    entropyBuffer += QString("%1,%2,%3,%4").arg(lastPoint.x()).arg(lastPoint.y()).arg(endPoint.x()).arg(endPoint.y());
+    QString entropyString = QString("%1,%2,%3,%4").arg(lastPoint.x()).arg(lastPoint.y()).arg(endPoint.x()).arg(endPoint.y());
+    entropyBuffer += entropyString;
+    collectedEntropy += entropyString.size();
 
-    if (entropyBuffer.size() > 1024 * 8)
+    ui->progressBar->setValue(static_cast<int>(collectedEntropy));
+    ui->progressBar->repaint();
+
+    if (entropyBuffer.size() > Constants::minEntropyToCollect * 2)
     {
         flushEntropyBuffer();
+    }
+
+    if (collectedEntropy > Constants::minEntropyToCollect && !ui->buttonBox->isEnabled())
+    {
+        ui->buttonBox->setEnabled(true);
     }
 
     const int rad = (penWidth / 2) + 2;
@@ -122,7 +143,7 @@ void EntropyDialog::resizeImage(QImage* image, const QSize& newSize)
     }
 
     QImage newImage(newSize, QImage::Format_RGB32);
-    newImage.fill(qRgb(255, 255, 255));
+    newImage.fill(QColor(32, 32, 32, 0)); // TODO: take all colors for this entropy dialog from theme if available!
 
     QPainter painter(&newImage);
     painter.drawImage(QPoint(0, 0), *image);
