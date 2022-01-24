@@ -740,10 +740,16 @@ void MainWindow::generateRsaKeyPair()
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
 
-    EntropyDialog entropyDialog(this); // TODO: cancel key generation if user clicks on "Cancel" button inside entropy collection dialog
+    EntropyDialog entropyDialog(this);
     entropyDialog.setModal(true);
     entropyDialog.show();
-    entropyDialog.exec();
+
+    if (entropyDialog.exec() != QDialog::Accepted)
+    {
+        on_pushButtonClearKeyPair_clicked();
+        return;
+    }
+
     entropyDialog.getCollectedEntropy(additionalEntropy + 32);
 
     int r = mbedtls_sha256(additionalEntropy, sizeof(additionalEntropy), additionalEntropySHA256, 0);
@@ -860,7 +866,13 @@ void MainWindow::generateEcdsaKeyPair(int keyType)
     EntropyDialog entropyDialog(this);
     entropyDialog.setModal(true);
     entropyDialog.show();
-    entropyDialog.exec();
+
+    if (entropyDialog.exec() != QDialog::Accepted)
+    {
+        on_pushButtonClearKeyPair_clicked();
+        return;
+    }
+
     entropyDialog.getCollectedEntropy(additionalEntropy + 32);
 
     int r = mbedtls_sha256(additionalEntropy, sizeof(additionalEntropy), additionalEntropySHA256, 0);
@@ -940,7 +952,13 @@ void MainWindow::generateEddsaKeyPair()
     }
 
     entropyDialog.show();
-    entropyDialog.exec();
+
+    if (entropyDialog.exec() != QDialog::Accepted)
+    {
+        on_pushButtonClearKeyPair_clicked();
+        return;
+    }
+
     entropyDialog.getCollectedEntropy(entropy + 32);
 
     r = mbedtls_sha256(entropy, sizeof(entropy), seed, 0);
