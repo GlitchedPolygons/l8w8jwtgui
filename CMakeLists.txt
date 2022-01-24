@@ -75,6 +75,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ${ED25519_SOURCES}
+        ${APP_ICON_MACOSX}
+        ${APP_ICON_RESOURCE_WINDOWS}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET l8w8jwtgui APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -90,6 +92,8 @@ else()
     else()
         add_executable(l8w8jwtgui
             ${PROJECT_SOURCES}
+            ${APP_ICON_MACOSX}
+            ${APP_ICON_RESOURCE_WINDOWS}
         )
     endif()
 endif()
