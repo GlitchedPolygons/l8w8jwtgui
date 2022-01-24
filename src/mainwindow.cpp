@@ -349,7 +349,7 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
 
                 if (customClaimKvp.length() != 2)
                 {
-                    throw std::exception("L8W8JWT GUI custom claim QListWidget entry string format requirement circumvented and thus infringed! These MUST be key-value pairs separated by \": \" for a valid payload to be written and signed!");
+                    throw std::runtime_error("L8W8JWT GUI custom claim QListWidget entry string format requirement circumvented and thus infringed! These MUST be key-value pairs separated by \": \" for a valid payload to be written and signed!");
                 }
 
                 const QString customClaimKey = customClaimKvp[0];
