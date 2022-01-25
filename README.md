@@ -7,3 +7,5 @@ It's very handy for usage during development and/or for testing and implementing
 ## Compatibility
 
 l8w8jwt GUI is available for Windows, Mac and Linux on the x64 architecture respectively. More are potentially supported, but not officially tested.
+
+![GUI Screenshot](https://files.glitchedpolygons.com/api/v1/files/tqp0e8d6sjk9z2b8)
