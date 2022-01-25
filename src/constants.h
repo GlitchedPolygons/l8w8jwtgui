@@ -4,7 +4,7 @@
 struct Constants
 {
     static inline const char* appName = "l8w8jwtGUI";
-    static inline const char* appVersion = "1.0.0";
+    static inline const char* appVersion = "1.0.1";
     static inline const char* orgName = "Glitched Polygons";
     static inline const char* orgDomain = "glitchedpolygons.com";
     static constexpr unsigned char iatToleranceSeconds = 8;
