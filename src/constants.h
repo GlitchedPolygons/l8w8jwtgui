@@ -19,6 +19,7 @@ struct Constants
         static inline const char* selectTextOnFocus = "SelectTextFieldContentOnFocus";
         static inline const char* windowWidth = "WindowWidth";
         static inline const char* windowHeight = "WindowHeight";
+        static inline const char* algorithm = "Algorithm";
         static inline const char* issuer = "Issuer";
         static inline const char* subject = "Subject";
         static inline const char* audience = "Audience";

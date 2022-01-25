@@ -77,6 +77,7 @@ MainWindow::~MainWindow()
 
     if (saveClaims)
     {
+        settings.setValue(Constants::Settings::algorithm, QVariant(ui->comboBoxAlgo->currentIndex()));
         settings.setValue(Constants::Settings::issuer, QVariant(QString(ui->lineEditIssuer->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
         settings.setValue(Constants::Settings::subject, QVariant(QString(ui->lineEditSubject->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
         settings.setValue(Constants::Settings::audience, QVariant(QString(ui->lineEditAudience->text().toUtf8().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
@@ -124,11 +125,13 @@ void MainWindow::loadSettings()
 
     if (saveClaims)
     {
+        const int alg = settings.value(Constants::Settings::algorithm, QVariant((int)0)).toInt();
         const QString iss = settings.value(Constants::Settings::issuer, QVariant(QString())).toString();
         const QString sub = settings.value(Constants::Settings::subject, QVariant(QString())).toString();
         const QString aud = settings.value(Constants::Settings::audience, QVariant(QString())).toString();
         const QString customClaims = settings.value(Constants::Settings::customClaims, QVariant(QString())).toString();
 
+        ui->comboBoxAlgo->setCurrentIndex(alg);
         ui->lineEditIssuer->setText(decodeClaim(iss));
         ui->lineEditSubject->setText(decodeClaim(sub));
         ui->lineEditAudience->setText(decodeClaim(aud));
