@@ -42,8 +42,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->dateTimeEditExpiration->setDateTime(QDateTime::currentDateTimeUtc().addSecs(600));
 
     ui->labelAboutText->setText(QString("About L8W8JWT GUI v%1").arg(Constants::appVersion));
-    ui->labelVersionNumbers->setText(QString("lib/l8w8jwt version: %1").arg(L8W8JWT_VERSION_STR));
-    ui->textBrowserAbout->setHtml(ui->textBrowserAbout->toHtml().arg(L8W8JWT_VERSION_STR).arg(QT_VERSION_STR));
+
+    char l8w8jwtVersionString[32] = { 0x00 };
+    l8w8jwt_get_version_string(l8w8jwtVersionString);
+
+    ui->labelVersionNumbers->setText(QString("lib/l8w8jwt version: %1").arg(l8w8jwtVersionString));
+    ui->textBrowserAbout->setHtml(ui->textBrowserAbout->toHtml().arg(l8w8jwtVersionString).arg(QT_VERSION_STR));
 
     loadSettings();
 
