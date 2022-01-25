@@ -6,4 +6,4 @@ It's very handy for usage during development and/or for testing and implementing
 
 ## Compatibility
 
-L8W8JWT GUI is available for Windows, Mac and Linux on the x64 architecture respectively. More are potentially supported, but not officially tested.
+l8w8jwt GUI is available for Windows, Mac and Linux on the x64 architecture respectively. More are potentially supported, but not officially tested.
