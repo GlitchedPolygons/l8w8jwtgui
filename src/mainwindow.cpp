@@ -237,7 +237,27 @@ QString MainWindow::sanitizeCustomClaimValue(QString value)
         trimmedValue = trimmedValue.right(trimmedValueLength - 1).left(trimmedValueLength - 2);
     }
 
-    return QString("\"%1\"").arg(trimmedValue.replace("\"", "\\\""));
+    return QString("\"%1\"").arg(trimmedValue.replace("\\", "\\\\").replace("\"", "\\\""));
+}
+
+QString MainWindow::desanitizeCustomClaimValue(QString value)
+{
+    QString trimmedValue = value.trimmed();
+
+    if (trimmedValue.isEmpty() || trimmedValue == "\"\"")
+    {
+        return "";
+    }
+
+    bool stringType = trimmedValue.startsWith("\"") && trimmedValue.endsWith("\"");
+
+    if (stringType)
+    {
+        const size_t trimmedValueLength = trimmedValue.count();
+        trimmedValue = trimmedValue.right(trimmedValueLength - 1).left(trimmedValueLength - 2);
+    }
+
+    return trimmedValue.replace("\\\\", "\\").replace("\\\"", "\"");
 }
 
 void MainWindow::on_pushButtonAddCustomClaim_clicked()
@@ -247,7 +267,7 @@ void MainWindow::on_pushButtonAddCustomClaim_clicked()
 
     if (ok && !text.isEmpty())
     {
-        const QString claimName = text.trimmed().replace("\"", "");
+        const QString claimName = text.trimmed().replace("\\", "\\\\").replace("\"", "");
         text = QInputDialog::getText(this, "Add custom claim", "Enter your desired custom claim's value here.\n\nThis may be a number, a string value, a boolean or even null.\n", QLineEdit::Normal, "", &ok);
 
         if (ok)
@@ -359,19 +379,19 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
                     throw std::runtime_error("L8W8JWT GUI custom claim QListWidget entry string format requirement circumvented and thus infringed! These MUST be key-value pairs separated by \": \" for a valid payload to be written and signed!");
                 }
 
-                const QString customClaimKey = customClaimKvp[0];
-                const QString customClaimValue = customClaimKvp[1];
+                QString customClaimKey = desanitizeCustomClaimValue(customClaimKvp[0]);
+                QString customClaimValue = desanitizeCustomClaimValue(customClaimKvp[1]);
 
                 QByteArray customClaimKeyUtf8 = customClaimKey.toUtf8();
                 QByteArray customClaimValueUtf8 = customClaimValue.toUtf8();
 
                 struct l8w8jwt_claim& customClaim = encodingParams.additional_payload_claims[i];
 
-                customClaim.type = 7;
+                customClaim.type = customClaimKvp[1].startsWith("\"") && customClaimKvp[1].endsWith("\"") ? 0 : 7;
 
-                customClaim.key_length = customClaimKeyUtf8.length() - 2;
+                customClaim.key_length = customClaimKeyUtf8.length();
                 customClaim.key = new char[customClaim.key_length + 1];
-                strncpy(customClaim.key, customClaimKeyUtf8.data() + 1, customClaim.key_length);
+                strncpy(customClaim.key, customClaimKeyUtf8.data(), customClaim.key_length);
                 customClaim.key[customClaim.key_length] = 0x00;
 
                 customClaim.value_length = customClaimValueUtf8.length();

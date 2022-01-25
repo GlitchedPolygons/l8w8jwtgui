@@ -73,5 +73,6 @@ private:
     void generateEddsaKeyPair();
     void generateEcdsaKeyPair(int keyType);
     QString sanitizeCustomClaimValue(QString);
+    QString desanitizeCustomClaimValue(QString);
 };
 #endif // MAINWINDOW_H
