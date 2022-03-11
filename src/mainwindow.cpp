@@ -464,7 +464,7 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
 
 static inline int jwtAlgoFromString(const QString alg)
 {
-    const uint16_t crc16 = qChecksum(alg.toUtf8());
+    const uint16_t crc16 = qChecksum(QByteArrayView(alg.toUtf8()));
 
     switch (crc16)
     {
