@@ -6,7 +6,7 @@ It's very handy for usage during development and/or for testing and implementing
 
 ## Compatibility
 
-l8w8jwt GUI is available for download [on the 'Releases' page](https://github.com/GlitchedPolygons/l8w8jwtgui/releases) for Windows, Linux and Mac on the x64 and Apple M1 architectures. More are potentially supported, but not officially tested.
+l8w8jwt GUI is available for download [on the 'Releases' page](https://github.com/GlitchedPolygons/l8w8jwtgui/releases) for Windows, Linux (Ubuntu 20) and Mac on the x64 and Apple M1 architectures. More are potentially supported, but not officially tested.
 
 ![GUI Screenshot](https://files.glitchedpolygons.com/api/v1/files/tqp0e8d6sjk9z2b8)
 
