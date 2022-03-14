@@ -29,6 +29,7 @@
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QByteArray>
 
 #include <chrono>
 #include <thread>
@@ -464,7 +465,12 @@ void MainWindow::on_pushButtonEncodeAndSign_clicked()
 
 static inline int jwtAlgoFromString(const QString alg)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     const uint16_t crc16 = qChecksum(QByteArrayView(alg.toUtf8()));
+#else
+    QByteArray ba = alg.toUtf8();
+    const uint16_t crc16 = qChecksum(ba.constData(),ba.length());
+#endif
 
     switch (crc16)
     {
