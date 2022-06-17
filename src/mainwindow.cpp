@@ -592,6 +592,7 @@ void MainWindow::on_pushButtonDecode_clicked()
 
     if (decodeOnly)
     {
+        decodingParams.alg = -1;
         decodingParams.verification_key = (unsigned char*)"\0\0";
         decodingParams.verification_key_length = 1;
         result += QString("⚠ No signature verification key entered: decoding only (without performing a signature check).\n\n");
