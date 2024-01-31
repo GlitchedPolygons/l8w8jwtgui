@@ -288,7 +288,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>4</hour>
+                  <hour>1</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -366,7 +366,7 @@
                 </property>
                 <property name="dateTime">
                  <datetime>
-                  <hour>4</hour>
+                  <hour>1</hour>
                   <minute>20</minute>
                   <second>0</second>
                   <year>2022</year>
@@ -376,7 +376,7 @@
                 </property>
                 <property name="time">
                  <time>
-                  <hour>4</hour>
+                  <hour>1</hour>
                   <minute>20</minute>
                   <second>0</second>
                  </time>
@@ -1041,12 +1041,15 @@
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;l8w8jwt GUI is a graphical user interface wrapper around the open-source crypto library &amp;quot;l8w8jwt&amp;quot;, which is written entirely in &lt;a href=&quot;https://en.wikipedia.org/wiki/C_(programming_language)&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;C&lt;/span&gt;&lt;/a&gt; and &lt;a href=&quot;https://www.apache.org/licenses/LICENSE-2.0&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Apache-2.0&lt;/span&gt;&lt;/a&gt; licensed, available on &lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;github.com/GlitchedPolygons/l8w8jwt&lt;/span&gt;&lt;/a&gt;.&lt;br /&gt;&lt;br /&gt;This specific version of the l8w8jwt GUI uses &lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;l8w8jwt v%1&lt;/span&gt;&lt;/a&gt; (statically linked), and was signed using the official &lt;a href=&quot;https://glitchedpolygons.com/privacy&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Glitched Polygons GPG key&lt;/span&gt;&lt;/a&gt;: check out the GitHub release page and the &lt;span style=&quot; font-family:'Courier New';&quot;&gt;sha256sums.txt.asc&lt;/span&gt;  file that came along with this executable to verify the signatures.&lt;br /&gt;&lt;br /&gt;The desktop version of the l8w8jwt GUI is written in &lt;a href=&quot;https://en.wikipedia.org/wiki/C%2B%2B&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;C++&lt;/span&gt;&lt;/a&gt; using the &lt;a href=&quot;https://www.qt.io&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Qt GUI Framework&lt;/span&gt;&lt;/a&gt; (version %2) as a dynamically linked library/shared library, which, at the time of writing (24th of January, 2022), is &lt;a href=&quot;https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;LGPL-3.0&lt;/span&gt;&lt;/a&gt; licensed. See the attached LGPL-3.0 plaintext below for more details.&lt;br /&gt;&lt;br /&gt;This GUI's source code is &lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwtgui/blob/main/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Apache-2.0&lt;/span&gt;&lt;/a&gt; licensed and available on &lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwtgui&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;github.com/GlitchedPolygons/l8w8jwtgui&lt;/span&gt;&lt;/a&gt; - but also available for purchase on &lt;a href=&quot;https://glitchedpolygons.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;glitchedpolygons.com&lt;/span&gt;&lt;/a&gt; (ships with some cool, additional stuff, PDF files/manual, etc...). &lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please consider buying it from there to support the development of nifty tools like this :)&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright &lt;span style=&quot; font-weight:700;&quot;&gt;(C)&lt;/span&gt; 2022, Raphael Beck | &lt;a href=&quot;https://glitchedpolygons.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Glitched Polygons&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright &lt;span style=&quot; font-weight:700;&quot;&gt;(C)&lt;/span&gt; 2024, Raphael Beck | &lt;a href=&quot;https://glitchedpolygons.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Glitched Polygons GmbH&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="openExternalLinks">
            <bool>true</bool>
@@ -1072,15 +1075,24 @@ p, li { white-space: pre-wrap; }
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;L8W8JWT GUI - Legal Notice&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This project makes use of the following components, which are, at the time of writing, open-source and freely available under their respective licenses:&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://www.qt.io&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Qt&lt;/span&gt;&lt;/a&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: LGPL-3.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: The Qt Company&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;l8w8jwt&lt;/span&gt;&lt;/a&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: Apache-2.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: Raphael Beck | Glitched Polygons&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://www.qt.io&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;Qt&lt;/span&gt;&lt;/a&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: LGPL-3.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: The Qt Company&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/GlitchedPolygons/l8w8jwt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#62cbf5;&quot;&gt;l8w8jwt&lt;/span&gt;&lt;/a&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License: Apache-2.0&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;
+&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright: Raphael Beck | Glitched Polygons GmbH&lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;License texts:&lt;/p&gt;
