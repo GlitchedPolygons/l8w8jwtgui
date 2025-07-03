@@ -16,6 +16,6 @@ Please consider buying it from there to support the development of nifty tools l
 
 ---
 
-![GUI Screenshot](https://api.files.glitchedpolygons.com/api/v1/files/tqp0e8d6sjk9z2b8)
+![GUI Screenshot](https://api-files.glitchedpolygons.com/api/v1/files/tqp0e8d6sjk9z2b8)
 
 [![JWT icon](https://github.com/GlitchedPolygons/l8w8jwt/raw/master/icon.png?raw=true)](https://github.com/GlitchedPolygons/l8w8jwt)
